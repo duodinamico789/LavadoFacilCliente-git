@@ -1,0 +1,12 @@
+- BuscarCliente no trae la ubicacion de la persona.
+- Listados como ListarClientes en persistencia al recorrer cuando se trae los registros de bd no agrega a la lista. Corregir y verificar los otros listados de lo que hiciste. Tambien los commit aparecen en el while, ver eso.
+- Procedimientos como altaUbicacion son void. No se puede ver que devuelva un exception o int. Revisar eso.
+- Hay que decidir si devolver un exception o int. La exception es mas dificil de implementar pero tiene mas detalle. SE ELIGIO INT. QUIZAS LO OTRO ES MEJOR PERO PRECISAMOS PROBAR LOS WEB SERVICES PARA VER BIEN.
+
+BRECHAS: La PK de brechas es la hora inicio y hora fin. Pero no podrian existir dos brechas con el mismo horario pero que se apliquen en dias diferentes?
+Porque de esta manera estamos haciendo que las brechas existan para los 7 dias de la semana.
+Lo que se me ocurre es agregar un campo mas a la tabla de brechas, un string, donde esten separados los dias seleccionados en presentación por comas. Un ejemplo de valor puede ser: "Lunes, Miercoles, Viernes". HECHO.
+
+Cuando necesite la sucursal del empleado logueado... traer el dato de la tabla relacion_empsucursal !!! Esto es para ver 
+
+Hacer acuerdo a Andres de que el CambioPassPedido se saca la columna Nombre, se deja la cedula para hacer inner join con persona y se agrega una fecha del pedido.

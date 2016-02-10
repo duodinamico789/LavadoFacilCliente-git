@@ -3,7 +3,7 @@ package Presentacion.Frames;
 import Entidades.Constantes;
 import Entidades.Datatypes.PrendaExtended;
 import Entidades.Enumeraciones;
-import Entidades.Exceptions.DataAccessException;
+import Entidades.Exceptions.PersistenciaException;
 import Entidades.Objetos.Cliente;
 import Entidades.Objetos.Empleado;
 import Entidades.Objetos.Opcion;
@@ -100,7 +100,7 @@ public class MantSolicitudesWizard extends BaseJFrame implements ParentFrameSoli
             cardLayout.show(jpContenido, steps.get(index));
             exito = true;
         } catch (Exception e) {
-            if(e instanceof DataAccessException) {
+            if(e instanceof PersistenciaException) {
                 JOptionPane.showMessageDialog(MantSolicitudesWizard.this, Constantes.compartido_ErrorConexion);
             }
             else

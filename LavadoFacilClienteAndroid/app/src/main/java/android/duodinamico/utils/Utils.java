@@ -2,8 +2,12 @@ package android.duodinamico.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.duodinamico.lavadofacilclienteandroid.R;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 import android.view.Menu;
 
@@ -11,10 +15,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.ConnectException;
 
 import Entidades.Constantes;
 
 public class Utils {
+    private static final String tag = "Utils";
+
     public static void MostrarMensaje(Activity activity, String title, String message) {
         //Utiliza AlertDialog para mostrar mensajes de cualquier tipo.
         try {
@@ -30,7 +37,7 @@ public class Utils {
             });
             builder.show();
         } catch(Exception ex) {
-            Log.i("BRUNO", "[LAVADOFACIL-EXCEPTION]" + ex.getMessage());
+            Log.e(tag, ex.getMessage(), ex);
         }
     }
 
@@ -42,12 +49,7 @@ public class Utils {
 
             builder.setTitle("Error: ");
 
-            String message;
-            if(exception instanceof NullPointerException) {
-                message = activity.getString(R.string.exception_null_pointer);
-            } else {
-                message = exception.getMessage();
-            }
+            String message = getExceptionMessage(activity, exception);
             builder.setMessage(message);
 
             builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
@@ -58,38 +60,36 @@ public class Utils {
             });
             builder.show();
         } catch(Exception ex) {
-            Log.i("BRUNO", "[LAVADOFACIL-EXCEPTION]" + ex.getMessage());
+            Log.e(tag, ex.getMessage(), ex);
         }
     }
 
-    //Este metodo no fue probado. Probarlo cuando se pueda
-    /*public static void Loggear(String text) {
-        File logFile = new File("sdcard/log.file");
-        if (!logFile.exists())
-        {
-            try
-            {
-                logFile.createNewFile();
-            }
-            catch (IOException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+    private static String getExceptionMessage(Activity activity, Exception exception) {
+        String e = String.valueOf(exception.getClass().getSimpleName());
 
-        try
-        {
-            //BufferedWriter for performance, true to set append to file flag
-            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
-            buf.append(text);
-            buf.newLine();
-            buf.close();
+        if(exception instanceof NullPointerException) {
+            return activity.getString(R.string.exception_nullpointerexception);
         }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        else if(exception instanceof NetworkOnMainThreadException) {
+            return activity.getString(R.string.exception_networkonmainthreadexception);
+        }
+        else if(exception instanceof ConnectException) {
+            return activity.getString(R.string.exception_connectexception);
+        }
+        else {
+            return exception.getMessage();
+        }
+    }
+
+    /*private static boolean isNetworkAvailable(Activity activity) {
+        try {
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        } catch (Exception ex) {
+            Log.e(tag, ex.getMessage(), ex);
+            throw ex;
         }
     }*/
 }

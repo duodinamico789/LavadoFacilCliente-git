@@ -16,28 +16,28 @@ INSERT INTO sucursales (NombreSuc,Telefono) VALUES ('Sucursal Maroñas','2020124
 INSERT INTO sucursales (NombreSuc,Telefono) VALUES ('Sucursal Parque Rodó','20201244');
 INSERT INTO sucursales (NombreSuc,Telefono) VALUES ('Sucursal Pocitos','20201245');
 INSERT INTO sucursales (NombreSuc,Telefono) VALUES ('Sucursal Punta Gorda','20201246');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Gorro','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Guante','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Pantalón','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Sombrero','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Sostén','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Suéter','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Vestido','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Blusa','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Boina','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Camisa','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Camiseta','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Chaqueta','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Corbata','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Falda','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Gorra','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Pijama','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Botas','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Calcetines','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Calzoncillos','0');
-INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Zapatos','0');
-DELETE FROM opciones;
-ALTER TABLE opciones AUTO_INCREMENT = 1;
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Gorro',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Guante',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Pantalón',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Sombrero',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Sostén',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Suéter',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Vestido',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Blusa',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Boina',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Camisa',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Camiseta',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Chaqueta',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Corbata',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Falda',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Gorra',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Pijama',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Botas',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Calcetines',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Calzoncillos',0);
+INSERT INTO prendas (Tipo,AplicaTint) VALUES ('Zapatos',0);
+/*DELETE FROM opciones;
+ALTER TABLE opciones AUTO_INCREMENT = 1;*/
 INSERT INTO opciones (NombreOpc, Precio) VALUES ('Lavado completo', '160.00');
 INSERT INTO opciones (NombreOpc, Precio) VALUES ('Lavado de blancos', '170.00');
 INSERT INTO opciones (NombreOpc, Precio) VALUES ('Lavado delicado', '190.00');
@@ -47,8 +47,8 @@ INSERT INTO opciones (NombreOpc, Precio) VALUES ('Planchado', '80.00');
 INSERT INTO opciones (NombreOpc, Precio) VALUES ('Utilizar agua caliente', '0.00');
 /*Solo perfumado no. No vas a llevar la ropa al lavadero solo para q la perfumen*/
 /*INSERT INTO opciones (NombreOpc, Precio) VALUES ('Perfumado', '80.00');*/
-DELETE FROM excepciones;
-ALTER TABLE excepciones AUTO_INCREMENT = 1;
+/*DELETE FROM excepciones;
+ALTER TABLE excepciones AUTO_INCREMENT = 1;*/
 INSERT INTO excepciones (Nombre) VALUES ('Omitir perfumado');
 /*Solo secado no. No vas a dejar la ropa mojada*/
 /*INSERT INTO excepciones (Nombre) VALUES ('Omitir secado');*/
@@ -76,7 +76,12 @@ insert into Ubicaciones (Direccion, Barrio, Ciudad) values ('93470 Golf Course S
 insert into Ubicaciones (Direccion, Barrio, Ciudad) values ('914 Grasskamp Street', 'South Carolina', 'Greenville');
 insert into Ubicaciones (Direccion, Barrio, Ciudad) values ('253 Roxbury Place', 'Georgia', 'Cumming');
 insert into Ubicaciones (Direccion, Barrio, Ciudad) values ('22 Lakewood Park', 'California', 'Los Angeles');
-insert into Ubicaciones (Direccion, Barrio, Ciudad) values ('6266 Basil Alley', 'Georgia', 'Albany');
+insert into Ubicaciones (Direccion, Barrio, Ciudad) values ('fgfgfg', 'Georgia', 'Albany');
+insert into Ubicaciones (Direccion, Barrio, Ciudad) values ('bnbn', 'Georgia', 'Albany');
+insert into Ubicaciones (Direccion, Barrio, Ciudad) values ('fgfdgfg', 'Georgia', 'Albany');
+insert into Ubicaciones (Direccion, Barrio, Ciudad) values ('dfgfdg', 'Georgia', 'Albany');
+insert into Ubicaciones (Direccion, Barrio, Ciudad) values ('bbnbn', 'Georgia', 'Albany');
+insert into Ubicaciones (Direccion, Barrio, Ciudad) values ('xxxx', 'Georgia', 'Albany');
 insert into relacion_ubicpersona(IdUbic, CedPersona) Values(1, 1111111);
 insert into relacion_ubicpersona(IdUbic, CedPersona) Values(2, 37185257);
 insert into relacion_ubicpersona(IdUbic, CedPersona) Values(3, 20732224);
@@ -84,3 +89,10 @@ insert into relacion_ubicpersona(IdUbic, CedPersona) Values(4, 78810941);
 insert into relacion_ubicpersona(IdUbic, CedPersona) Values(5, 27314113);
 insert into relacion_ubicpersona(IdUbic, CedPersona) Values(6, 91150042);
 insert into relacion_ubicpersona(IdUbic, CedPersona) Values(7, 15965519);
+insert into relacion_ubicsucursales(IdUbic, idSuc) Values(8, 2);
+insert into relacion_ubicsucursales(IdUbic, idSuc) Values(9, 3);
+insert into relacion_ubicsucursales(IdUbic, idSuc) Values(10, 4);
+insert into relacion_ubicsucursales(IdUbic, idSuc) Values(11, 5);
+insert into relacion_ubicsucursales(IdUbic, idSuc) Values(12, 6);
+
+

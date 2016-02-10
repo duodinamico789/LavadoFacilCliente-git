@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS `lavadero_01`;
-CREATE DATABASE `lavaderoclientes_01`; USE `lavadero_01`;
+CREATE DATABASE `lavadero_01`; USE `lavadero_01`;
 CREATE TABLE `brechasHorarias` (
  `HoraInicio` TIME NOT NULL,
  `HoraFin` TIME NOT NULL,
@@ -64,15 +64,17 @@ CREATE TABLE `solicitudes` (
  `Estado` VARCHAR(50) NOT NULL,
  `CedulaCli` VARCHAR(30) NOT NULL,
  `CedulaEmp` VARCHAR(30) NOT NULL,
- `ConDelivery` BIT NOT NULL,
+ `ConDelivery` bool NOT NULL,
  `IdSuc` INT(11) NOT NULL, PRIMARY KEY (`Id`), CONSTRAINT `FK_clientes_solicitudes` FOREIGN KEY (`CedulaCli`) REFERENCES `clientes` (`Cedula`), CONSTRAINT `FK_empleados_solicitudes` FOREIGN KEY (`CedulaEmp`) REFERENCES `empleados` (`Cedula`), CONSTRAINT `FK_suc_solicitudes` FOREIGN KEY (`IdSuc`) REFERENCES `sucursales` (`IdSuc`)
 );
 CREATE TABLE `solicitudDetalles` (
- `IdSol` INT(11) NOT NULL,
+ `Id` int (11) NOT NULL AUTO_INCREMENT,
+ `IdSol` int NOT NULL,
  `Linea` INT(4) NOT NULL,
- `IdPda` INT(4) NOT NULL,
- `Precio` DECIMAL(10,2) NOT NULL,
- `Descripcion` VARCHAR(100) NOT NULL, PRIMARY KEY (`IdSol`, `Linea`), CONSTRAINT `FK_solicitudDetalles_sol` FOREIGN KEY (`IdSol`) REFERENCES `solicitudes` (`Id`), CONSTRAINT `FK_solicitudDetalles_pda` FOREIGN KEY (`IdPda`) REFERENCES `prendas` (`IdPda`)
+ `IdPda` INT(4),
+ `Precio` DECIMAL(10,2) ,
+ `Cantidad` INT,
+ `Descripcion` VARCHAR(100) NOT NULL, PRIMARY KEY (`Id`), CONSTRAINT `FK_solicitudDetalles_pda` FOREIGN KEY (`IdPda`) REFERENCES `prendas` (`IdPda`), CONSTRAINT `FK_solicitudDetalles_sol` FOREIGN KEY (`IdSol`) REFERENCES `solicitudes` (`Id`)
 );
 CREATE TABLE `tintorerias` (
  `IdTint` INT(11) NOT NULL AUTO_INCREMENT,
@@ -116,27 +118,86 @@ CREATE TABLE `relacion_ubicpersona` (
 	`IdUbic` INT(11) NOT NULL,
 	`CedPersona` VARCHAR(30) NOT NULL, CONSTRAINT `FK___ubicaciones` FOREIGN KEY (`idubic`) REFERENCES `ubicaciones` (`id`), CONSTRAINT `FK___personas` FOREIGN KEY (`CedPersona`) REFERENCES `personas` (`Cedula`)
 );
-CREATE TABLE `relacion_prendasSolicDetalle` (
-	`IdPda` INT(11) NOT NULL,
-	`IdSol` INT(11) NOT NULL,
- `Linea` INT(11) NOT NULL,
- `Cantidad` INT(11) NOT NULL, CONSTRAINT `FK__prendas3` FOREIGN KEY (`IdPda`) REFERENCES `prendas` (`IdPda`), CONSTRAINT `FK__solicitudes3` FOREIGN KEY (`IdSol`, `Linea`) REFERENCES `solicitudDetalles` (`IdSol`, `Linea`)	
-);
 CREATE TABLE `relacion_excepcionesPrendas` (
 	`IdPda` INT(11) NOT NULL,
 	`IdExc` INT(11) NOT NULL, CONSTRAINT `FK___prendas` FOREIGN KEY (`IdPda`) REFERENCES `prendas` (`IdPda`), CONSTRAINT `FK___excepciones` FOREIGN KEY (`IdExc`) REFERENCES `excepciones` (`IdExc`)
 );
-CREATE TABLE `relacion_prendasATintoreria` (
-	`IdPda` INT(11) NOT NULL,
- `IdTint` INT(11) NOT NULL,
- `Precio` DECIMAL(10,2) NOT NULL, CONSTRAINT `FK___prendas4` FOREIGN KEY (`IdPda`) REFERENCES `prendas` (`IdPda`), CONSTRAINT `FK___tintorerias4` FOREIGN KEY (`IdTint`) REFERENCES `tintorerias` (`IdTint`)
-);
 
 DELIMITER //
 
+
 /*-- -- -- -- -- -- -- -- -- -- SOLICITUDES -- -- -- -- -- -- -- -- -- -- */
 /*-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- */
+create procedure AltaSolicitudDetalle(idSol2 int, linea2 int, precio2 DECIMAL(10,2), cantidad2 int, descripcion2 varchar(100), idPda2 int, OUT result int)begin
+declare exit handler for SqlException
+	begin
+		SET result = -1;
+		rollback;
+	end;
 	
+	INSERT INTO SolicitudDetalleS (`IdSol`, `Linea`,`IdPda`, `Precio`, `Cantidad`, `Descripcion`) VALUES (idSol2,linea2, idPda2, precio2, cantidad2, descripcion2);
+	SET result = 1;
+	commit;
+end//	
+
+create procedure BajaSolicitudDetalle(idSol2 int, OUT result int) begin
+	declare exit handler for SqlException
+	begin
+		SET result = -1;
+		rollback;
+	end;
+	
+	DELETE FROM SolicitudDetalleS WHERE `IdSol` = idSol2;
+	commit;
+	SET result = 1;
+end//
+
+create procedure ListarOpcionesXSol(idSol int)
+begin
+  select opciones.* 
+  from opciones
+  inner join relacion_solicitudesopciones on relacion_solicitudesopciones.IdOpcion = opciones.IdOpc
+  where relacion_solicitudesopciones.IdSol = idSol;
+end//
+
+create procedure ListarPrendasXSol(idSol int)
+begin
+  select solicituddetalles.*, prendas.*
+  from solicituddetalles 
+  inner join prendas on prendas.IdPda = solicituddetalles.IdPda
+  where solicituddetalles.IdSol = idSol and prendas.IdPda not in(1);
+end//
+	
+Create Procedure BuscarSolicitudXId(idSol int)
+begin
+ select solicitudes.*, opciones.*, solicituddetalles.*
+ from solicitudes 
+ inner join relacion_solicitudesopciones on relacion_solicitudesopciones.IdSol = solicitudes.Id
+ inner join opciones on relacion_solicitudesopciones.IdOpcion = opciones.IdOpc
+ inner join solicituddetalles on solicituddetalles.IdSol = solicitudes.Id
+ where solicitudes.Id =  idSol
+ GROUP by solicitudes.Id;   
+end//
+
+Create Procedure BuscarSolicitudXCli(CiCli varchar(30))
+begin
+ select solicitudes.*, opciones.*, solicituddetalles.*
+ from solicitudes 
+ inner join relacion_solicitudesopciones on relacion_solicitudesopciones.IdSol = solicitudes.Id
+ inner join opciones on relacion_solicitudesopciones.IdOpcion = opciones.IdOpc
+ inner join solicituddetalles on solicituddetalles.IdSol = solicitudes.Id
+ where solicitudes.CedulaCli =  CiCli
+ GROUP by solicitudes.Id;  
+end//
+
+create procedure listarBrechasXSol(idSol int)
+begin
+   select brechashorarias.*
+	from brechashorarias 
+	inner join relacion_solicitudesbrechas on relacion_solicitudesbrechas.HoraInicio = brechashorarias.HoraInicio and relacion_solicitudesbrechas.HoraFin = brechashorarias.HoraFin
+	where relacion_solicitudesbrechas.IdSol = idSol; 
+end//
+
 create procedure ListarSolicitudes()
 begin
   select*
@@ -145,9 +206,9 @@ end//
 
 create procedure AltaSolicitud(fechaIngreso2 datetime, Observaciones2 varchar(180), 
 										 fechaEntrega2 datetime, estado2 varchar(50),
-                               cedulaCli2 varchar(30), CedulaEmp2 varchar(30), 
-										 ConDelivery2 bit, 		 nomsucursal2 varchar(30), 
-										 OUT result int)
+                               cedulaCli2 varchar(30), cedulaEmp2 varchar(30), 
+										 ConDelivery2 bool, idSuc2 varchar(30), 
+										 OUT result int,  OUT increment int)
 begin
 	declare exit handler for SqlException
     begin
@@ -156,11 +217,86 @@ begin
     end;
    
    start transaction;
-	   INSERT INTO `lavadero_01`.`Solicitudes` (`fechaIngreso`, `Observaciones`, fechaEntrega, estado, cedulaCli, CedulaEmp, ConDelivery, NomSucursal) 
-			VALUES (fechaIngreso2, Observaciones2, fechaEntrega2, estado2,cedulaCli2, CedulaEmp2, ConDelivery2, NomSucursal2);
+	   INSERT INTO `lavadero_01`.`Solicitudes` (`fechaIngreso`, `Observaciones`, fechaEntrega, estado, cedulaCli, CedulaEmp, ConDelivery, idSuc) 
+			VALUES (fechaIngreso2, Observaciones2, fechaEntrega2, estado2,cedulaCli2, cedulaEmp2, ConDelivery2, idSuc2);
    	SET result = 1;
+   	set increment = @@IDENTITY;
    commit;
 end//	
+
+
+create procedure AltaRelacion_solicitudesopciones(IdSol2 int, IdOpcion2 int, OUT result int)
+begin
+   declare exit handler for sqlexception
+   begin 
+      set result = -1;
+      rollback;
+   end;
+	set result=0;
+   
+   if(exists(
+		select IdSol, IdOpcion  
+		from Relacion_solicitudesopciones 
+		where IdSol = IdSol2
+			and IdOpcion = IdOpcion2)) then set result=-2;
+   end if;
+   
+   if(result = 0) then
+      insert into Relacion_solicitudesopciones(IdSol,IdOpcion)
+			values(IdSol2,IdOpcion2);
+		set result=1;
+	end if;
+end//	
+
+
+create procedure BajaRelacion_solicitudesopciones(IdSol2 int, IdOpcion2 int,OUT result int)
+begin
+   declare exit handler for SqlException
+   begin
+      set result = -1;
+      rollback;
+   end;
+   
+   delete from Relacion_solicitudesopciones where IdSol = IdSol2 and IdOpcion = IdOpcion2;
+   set result = 1;
+end//	
+
+create procedure AltaRelacion_solicitudesbrechas(IdSol2 int, HoraInicio2 time, HoraFin2 time,OUT result int)
+begin
+   declare exit handler for sqlexception
+   begin 
+      set result = -1;
+      rollback;
+   end;
+	set result=0;
+   
+   if(exists(
+		select IdSol, HoraInicio,HoraFin 
+		from  Relacion_solicitudesbrechas 
+		where IdSol = IdSol2
+			and HoraInicio = HoraInicio2
+			and HoraFin = HoraFin2)) then set result=-2;
+   end if;
+   
+   if(result = 0) then
+      insert into Relacion_solicitudesbrechas(IdSol,HoraInicio,HoraFin)
+			values(IdSol2,HoraInicio2,HoraFin2);
+		set result=1;
+	end if;
+end//	
+
+create procedure BajaRelacion_solicitudbrechas(IdSol2 int, HoraInicio2 time, HoraFin2 time, OUT result int)
+begin
+   declare exit handler for SqlException
+   begin
+      set result = -1;
+      rollback;
+   end;
+   
+   delete from Relacion_solicitudbrechas where IdSol = IdSol2 and HoraInicio = HoraInicio2 and HoraFin = HoraFin2;
+   set result = 1;
+end//	
+
 
 create procedure ModificarSolicitud(id2 int, fechaIngreso2 datetime, 
 												Observaciones2 varchar(180), fechaEntrega2 datetime, 
@@ -189,7 +325,6 @@ begin
 										  ConDelivery = ConDelivery2,
 										  NomSucursal = NomSucursal2
 										  where id=id2;
-
 		set result=1;	
 		commit;
 	end if;
@@ -211,7 +346,6 @@ end//
 
 /*-- -- -- -- -- -- -- -- -- -- CambioPassPedido  -- -- -- -- -- -- -- -- -- -- */
 /*-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- */
-
 	
 create procedure ActualizarCambioPassPedido(cedula2 varchar(30), fecha2 datetime, OUT result int)
 begin
@@ -623,12 +757,12 @@ begin
    end;
 	set result=0;
    
-   if(exists(select id from prendaEnvio where IdPda=IdPda2 and IdTint=IdTint2 ))then set result=-2;
+   if(exists(select id from relacion_prendaenvio where IdPda=IdPda2 and IdTint=IdTint2 ))then set result=-2;
    end if;
    
    if(result = 0) then
 	start transaction;
-	insert into prendaEnvio(IdPda,IdTint,Precio)values(IdPda2,IdTint2,Precio2);
+	insert into relacion_prendaenvio(IdPda,IdTint,Precio)values(IdPda2,IdTint2,Precio2);
 	set result=1;	
 	commit;
 	end if; 
@@ -643,12 +777,12 @@ begin
 	end;
 	set result = 0;
 	
-	if not(exists(select Id from prendasEnvio where Id = Id2))then set result=-2;
+	if not(exists(select Id from relacion_prendaenvio where Id = Id2))then set result=-2;
 	end if;
 	
 	if(result=0)then
 	   start transaction;
-		   update prendasEnvio set IdPda = IdPda2, IdTint = IdTint, Precio = Precio2 where Id = Id2;
+		   update relacion_prendaenvio set IdPda = IdPda2, IdTint = IdTint, Precio = Precio2 where Id = Id2;
 
 	set result=1;	
 	commit;
@@ -665,7 +799,7 @@ begin
 	set result = 0;
 	
 	if(result = 0)then
-	   delete from prendaEnvio where Id = Id2;
+	   delete from relacion_prendaenvio where Id = Id2;
 	   set result = 1;
 	   commit;
 	end if;  
@@ -673,10 +807,19 @@ end//
 
 CREATE PROCEDURE ListarPrendaEnvio()
 begin
-   select prendaenvio.*, prendas.Tipo
-   from prendaenvio inner join prendas
-   on prendaenvio.IdPda = prendas.IdPda
-	where prendaenvio.IdPda = prendas.IdPda;
+   select relacion_prendaenvio.*, prendas.Tipo
+   from relacion_prendaenvio inner join prendas
+   on relacion_prendaenvio.IdPda = prendas.IdPda
+	where relacion_prendaenvio.IdPda = prendas.IdPda;
+end//
+
+CREATE PROCEDURE ListarPrendasEnvioXIdPren(idpren int)
+begin
+   select relacion_prendaenvio.*, prendas.Tipo, tintorerias.Nombre
+   from relacion_prendaenvio 
+	inner join prendas on prendas.IdPda = relacion_prendaenvio.IdPda
+   inner join tintorerias on tintorerias.IdTint = relacion_prendaenvio.IdTint
+	where relacion_prendaenvio.IdPda = idpren;
 end//
 
 /*-- -- -- -- -- -- -- -- -- --  PRENDAS -- -- -- -- -- -- -- -- -- -- -- */
@@ -1364,6 +1507,8 @@ end//
 
 /*-- -- -- -- -- -- -- -- -- -- INSERTS -- -- -- -- -- -- -- -- -- -- */
 /*-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- */
+/*PRENDA VACIA, DEJARLA ASI COMO ESTA*/
+INSERT INTO prendas(Tipo,AplicaTint) VALUES ('',0); 
 INSERT INTO prendas(Tipo, AplicaTint) values ('AcolchadoPlumas', 1);
 INSERT INTO prendas(Tipo, AplicaTint) values ('AcolchadoWata', 1);
 INSERT INTO prendas(Tipo, AplicaTint) values ('Frazada', 1);
@@ -1374,5 +1519,4 @@ INSERT INTO prendas(Tipo, AplicaTint) values ('PantalonPana', 1);
 INSERT INTO prendas(Tipo, AplicaTint) values ('Saco', 1);
 INSERT INTO prendas(Tipo, AplicaTint) values ('Traje', 1);
 INSERT INTO prendas(Tipo, AplicaTint) values ('Tapado', 1);
-
 

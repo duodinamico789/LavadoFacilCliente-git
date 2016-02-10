@@ -178,8 +178,8 @@ public class Constantes {
             + "el error persiste comuníquese con el administrador del sistema. ";
     // </editor-fold>
     
-    public static String
-                    sql_error_unreachable_connection   = "ERROR! El servidor no se encuentra disponible por el momento. Por favor, intente más tarde. ";    
+//    public static String
+//                    sql_error_unreachable_connection   = "El servidor de datos no se encuentra disponible por el momento. Por favor, intente más tarde. ";    
     
     public static int row_count_ingresos_contab_viewer = 8;
     public static int row_count_gastos_contab_viewer = 8;

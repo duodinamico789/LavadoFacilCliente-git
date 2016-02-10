@@ -1,6 +1,7 @@
 package android.duodinamico.actividades;
 
 import android.content.Intent;
+import android.duodinamico.asynctasks.BuscarPersonaAsyncTask;
 import android.duodinamico.lavadofacilclienteandroid.R;
 import android.duodinamico.servicios.WebServicesFabrica;
 import android.duodinamico.utils.SessionUsuarioUtils;
@@ -41,13 +42,14 @@ public class LoginActivity extends ActionBarActivity {
     private void btnLoguearse_Click(View v) {
         try {
             if (ValidarLogin()) {
-                String cedula = txtCedula.getText().toString();
-                String passw = txtPassw.getText().toString();
+                /*String cedula = txtCedula.getText().toString();
+                String passw = txtPassw.getText().toString();*/
 
                 //Cualquier excepcion sera arrojada desde persistencia
-                Persona p = WebServicesFabrica.getInstance().getWebServices().BuscarPersona(cedula);
+                BuscarPersonaAsyncTask a = new BuscarPersonaAsyncTask(LoginActivity.this);
+                a.execute(txtCedula.getText().toString());
 
-                if(p instanceof Empleado) {
+                /*if(p == null || p instanceof Empleado) {
                     throw new Exception(String.valueOf(R.string.error_user_or_password_invalid));
                 } else {
                     p = WebServicesFabrica.getInstance().getWebServices().LoginCliente(cedula,passw);
@@ -62,9 +64,11 @@ public class LoginActivity extends ActionBarActivity {
                         throw new Exception(getString(
                                 R.string.error_user_or_password_invalid));
                     }
-                }
+                }*/
             }
-        } catch(Exception ex) { Utils.MostrarMensajeException(this, ex); }
+        } catch(Exception ex) {
+            Utils.MostrarMensajeException(this, ex);
+        }
     }
 
     //Evento creado en CargarVariables()
@@ -87,9 +91,9 @@ public class LoginActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -133,7 +137,7 @@ public class LoginActivity extends ActionBarActivity {
         return valido;
     }
 
-    private void RedirigirMainMenu() {
+    public void RedirigirMainMenu() {
         try {
 //            //Agregamos el usuario logueado en formato Json y commiteamos
 //            Common.UserUtils.LoadUsuarioLogueado(usuario, getApplicationContext());

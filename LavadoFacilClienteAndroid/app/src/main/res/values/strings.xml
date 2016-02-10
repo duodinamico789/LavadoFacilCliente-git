@@ -33,10 +33,13 @@
     <string name="leaving_alta_solicitud_confirmation_message">Esta seguro que desea salir
         de Alta solicitud de lavado? Todos los cambios se perderán. </string>
 
+    <string name="exception_nullpointerexception">"Se ha intentado llamar a un método o evento de un objeto cuya referencia no fue establecida como instancia de objeto."</string>
+    <string name="exception_networkonmainthreadexception">"Aplicación intenta realizar una operación de red en su hilo principal"</string>
+    <string name="exception_connectexception">"Ha ocurrido un error de conexión. Asegurese de tener conexión a internet e intente nuevamente."</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_alta_solicitud_lavado">Alta solicitud de lavado</string>
-    <string name="exception_null_pointer">"Se ha intentado llamar a un método o evento de un objeto
-        cuya referencia no fue establecida como instancia de objeto."</string>
+
     <string name="action_bar_button_siguiente">Siguiente</string>
     <string name="action_bar_button_anterior">Anterior</string>
     <string name="fragment_alta_solicitud_step_one_txtsubtitulo_value">Estos son sus datos.

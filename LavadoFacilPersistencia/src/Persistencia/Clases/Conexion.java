@@ -1,6 +1,7 @@
 package Persistencia.Clases;
 
 import Entidades.Constantes;
+import Entidades.Exceptions.ConexionException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
@@ -17,28 +18,25 @@ public class Conexion {
             String pNombreBd)
             throws Exception {
         try {
-            String databaseURL = 
-                    "jdbc:mysql://" + pHost 
-                    + ":" + pPuerto 
+            String databaseURL
+                    = "jdbc:mysql://" + pHost
+                    + ":" + pPuerto
                     + "/" + pNombreBd;
             Class.forName("com.mysql.jdbc.Driver");
-            con_mysql = java.sql.DriverManager.getConnection(databaseURL, 
-                                                             pUsuario, 
-                                                             pPass);
+            con_mysql = java.sql.DriverManager.getConnection(databaseURL,
+                    pUsuario,
+                    "Lavadero1111Facil");
             //System.out.println("Conexion con MySQL Establecida..");
+            
+            return con_mysql;
         } catch (Exception e) {
-            e.printStackTrace();
-            if (e instanceof MySQLNonTransientConnectionException
-                    || e instanceof CommunicationsException) {
-                throw new Exception(Constantes.sql_error_unreachable_connection);
-            } else {
-                throw new Exception(e);
-            }
+//            if (e instanceof MySQLNonTransientConnectionException
+//                    || e instanceof CommunicationsException) {
+//                throw new ConexionException(Constantes.sql_error_unreachable_connection, e);
+//            } else {
+//                throw new ConexionException(e.getMessage(), e);
+//            }
+            throw new ConexionException(Constantes.compartido_ErrorConexion, e);
         }
-        return con_mysql;
-    }
-
-    public static void ImprimirSQLException(SQLException sqlex) {
-        System.out.println(sqlex.getMessage());
     }
 }

@@ -79,20 +79,5 @@ public class PrendasListAdapter extends ArrayAdapter<PrendaExtended> {
             return null;
         }
     }
-
-    //region metodos Play Event
-    public void addPlayEstacionListener(PlayEstacionListener toAdd) {
-        if(playEstacionListeners == null)
-            playEstacionListeners = new LinkedList<PlayEstacionListener>();
-        playEstacionListeners.add(toAdd);
-    }
-
-    //Evento que se ejecuta al seleccionar una estacion para reproducir
-    private void PlayEstacion(Estacion estacion) {
-        // Notify everybody that may be interested.
-        for (PlayEstacionListener list : playEstacionListeners)
-            list.Play(estacion);
-    }
-    //endregion
 }
 

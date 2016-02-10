@@ -39,10 +39,9 @@ public class LogicaPersonas implements ILogicaPersonas{
      {
         Persistencia.Interfaces.IPersistenciaCliente cli = Persistencia.Clases.FabricaPersistencia.getInstancia().getIPersistenciaCliente();
         Persona per = cli.BuscarCliente(ced);
-        if(per==null)
-        {
-         Persistencia.Interfaces.IPersistenciaEmpleado emp = Persistencia.Clases.FabricaPersistencia.getInstancia().getIPersistenciaEmpleado();
-         per=emp.BuscarEmpleado(ced);
+        if (per == null) {
+            Persistencia.Interfaces.IPersistenciaEmpleado emp = Persistencia.Clases.FabricaPersistencia.getInstancia().getIPersistenciaEmpleado();
+            per = emp.BuscarEmpleado(ced);
         }
         return per;
      }

@@ -4,9 +4,6 @@
     <service name="AndroidWebServices">
       <implementation-class>LavadoFacilWebServices.AndroidWebServices</implementation-class>
     </service>
-    <service name="SolicitudesWebService">
-      <implementation-class>LavadoFacilWebServices.SolicitudesWebService</implementation-class>
-    </service>
   </services>
   <clients/>
 </jax-ws>

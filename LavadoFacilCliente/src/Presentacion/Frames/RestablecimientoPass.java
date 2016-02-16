@@ -41,7 +41,7 @@ public RestablecimientoPass() {
                    
                     datos[i][0] = emp.get(i).getCedula();
                     datos[i][1] = emp.get(i).getNombre();
-                    datos[i][2] = emp.get(i).getfechaOlvidoPass().toString();
+                    datos[i][2] = emp.get(i).getFechaOlvidoPass().toString();
                 }
                 
                 jTablePedidos.setModel(

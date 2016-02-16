@@ -46,5 +46,4 @@ public class Cliente extends Persona implements Serializable {
     public void setSolicitudesList(List<Solicitud> solicitudesList) {
         this.solicitudesList = solicitudesList;
     }
-
 }

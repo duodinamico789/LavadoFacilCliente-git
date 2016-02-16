@@ -418,9 +418,12 @@ end//
   
 create procedure LogueoUsuario (cedula2 varchar(30), passw2 varchar(30))
 begin
-	select * 
-	from personas
-   where Cedula = cedula2 and Passw = md5(passw2);
+	select a.*, c.FechaReg, e.Sueldo, e.FechaIngreso, e.tipoempleado, e.IdSuc
+	from personas a
+	left outer join clientes c on c.Cedula = a.Cedula
+    left outer join empleados e on e.Cedula = a.Cedula
+    /*where a.Cedula = cedula2 and a.Passw = md5(passw2);*/
+    where a.Cedula = cedula2 and a.Passw = passw2;
 end//
 
 /*-- -- -- -- -- -- -- -- -- -- MOVIMIENTOS -- -- -- -- -- -- -- -- -- -- */

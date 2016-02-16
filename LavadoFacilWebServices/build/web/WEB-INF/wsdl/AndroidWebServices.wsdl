@@ -12,8 +12,8 @@
   <message name="BuscarPersonaResponse">
     <part name="parameters" element="tns:BuscarPersonaResponse"/>
   </message>
-  <message name="Exception">
-    <part name="fault" element="tns:Exception"/>
+  <message name="WebServiceException">
+    <part name="fault" element="tns:WebServiceException"/>
   </message>
   <message name="LoginCliente">
     <part name="parameters" element="tns:LoginCliente"/>
@@ -21,16 +21,27 @@
   <message name="LoginClienteResponse">
     <part name="parameters" element="tns:LoginClienteResponse"/>
   </message>
+  <message name="ListarPrendas">
+    <part name="parameters" element="tns:ListarPrendas"/>
+  </message>
+  <message name="ListarPrendasResponse">
+    <part name="parameters" element="tns:ListarPrendasResponse"/>
+  </message>
   <portType name="AndroidWebServices">
     <operation name="BuscarPersona">
       <input wsam:Action="http://LavadoFacilWebServices/AndroidWebServices/BuscarPersonaRequest" message="tns:BuscarPersona"/>
       <output wsam:Action="http://LavadoFacilWebServices/AndroidWebServices/BuscarPersonaResponse" message="tns:BuscarPersonaResponse"/>
-      <fault message="tns:Exception" name="Exception" wsam:Action="http://LavadoFacilWebServices/AndroidWebServices/BuscarPersona/Fault/Exception"/>
+      <fault message="tns:WebServiceException" name="WebServiceException" wsam:Action="http://LavadoFacilWebServices/AndroidWebServices/BuscarPersona/Fault/WebServiceException"/>
     </operation>
     <operation name="LoginCliente">
       <input wsam:Action="http://LavadoFacilWebServices/AndroidWebServices/LoginClienteRequest" message="tns:LoginCliente"/>
       <output wsam:Action="http://LavadoFacilWebServices/AndroidWebServices/LoginClienteResponse" message="tns:LoginClienteResponse"/>
-      <fault message="tns:Exception" name="Exception" wsam:Action="http://LavadoFacilWebServices/AndroidWebServices/LoginCliente/Fault/Exception"/>
+      <fault message="tns:WebServiceException" name="WebServiceException" wsam:Action="http://LavadoFacilWebServices/AndroidWebServices/LoginCliente/Fault/WebServiceException"/>
+    </operation>
+    <operation name="ListarPrendas">
+      <input wsam:Action="http://LavadoFacilWebServices/AndroidWebServices/ListarPrendasRequest" message="tns:ListarPrendas"/>
+      <output wsam:Action="http://LavadoFacilWebServices/AndroidWebServices/ListarPrendasResponse" message="tns:ListarPrendasResponse"/>
+      <fault message="tns:WebServiceException" name="WebServiceException" wsam:Action="http://LavadoFacilWebServices/AndroidWebServices/ListarPrendas/Fault/WebServiceException"/>
     </operation>
   </portType>
   <binding name="AndroidWebServicesPortBinding" type="tns:AndroidWebServices">
@@ -43,8 +54,8 @@
       <output>
         <soap:body use="literal"/>
       </output>
-      <fault name="Exception">
-        <soap:fault name="Exception" use="literal"/>
+      <fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
       </fault>
     </operation>
     <operation name="LoginCliente">
@@ -55,8 +66,20 @@
       <output>
         <soap:body use="literal"/>
       </output>
-      <fault name="Exception">
-        <soap:fault name="Exception" use="literal"/>
+      <fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="ListarPrendas">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
       </fault>
     </operation>
   </binding>

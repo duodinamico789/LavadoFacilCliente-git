@@ -29,17 +29,25 @@ public class PersistenciaCliente implements IPersistenciaCliente {
     @Override
     public Cliente LoginCliente(String ced, String pass) throws Exception {
         Connection cnn = null;
-        Cliente c = new Cliente();
+        Cliente c = null;
         try {
             cnn = Conexion.ConectarMysql("localhost", 3306, "root", "", "lavadero_01");
             cnn.setAutoCommit(false);
 
-            CallableStatement cs = cnn.prepareCall("{call logueo(?, ?)}");
+            CallableStatement cs = cnn.prepareCall("{call LogueoUsuario(?, ?)}");
             cs.setString("cedula2", ced);
             cs.setString("passw2", pass);
-            cs.execute();
-            c.setCedula(ced);
-            c.setPassw(pass);
+            ResultSet rs = cs.executeQuery();
+            if (rs.next()) {
+                rs.first();
+                c = new Cliente();
+                c.setCedula(rs.getString("Cedula"));
+                c.setPassw(rs.getString("Passw"));
+                c.setNombre(rs.getString("Nombre"));
+                c.setTelefono(rs.getString("Telefono"));
+                c.setCelular(rs.getString("Celular"));
+                c.setfechareg(rs.getDate("FechaReg"));
+            }
 
         } catch (Exception e) {
             if (cnn != null) {

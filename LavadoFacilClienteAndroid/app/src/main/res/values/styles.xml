@@ -2,7 +2,13 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <item name="actionBarStyle">@style/ActionBar</item>
+    </style>
+
+    <!-- Action Bar Styles -->
+    <style name="ActionBar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="background">#ff00878a</item>
+        <item name="textSize">30sp</item>
     </style>
 
 </resources>

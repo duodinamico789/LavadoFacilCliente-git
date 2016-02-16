@@ -1,6 +1,6 @@
 package Entidades.Objetos;
-import java.util.Date;
 import java.io.Serializable;
+import java.util.Date;
 
 public abstract class Persona implements Serializable {
     
@@ -67,14 +67,14 @@ public abstract class Persona implements Serializable {
         this.celular = celular;
     }
     
-    public Date getfechaOlvidoPass() {
+    public Date getFechaOlvidoPass() {
         return fechaOlvidoPass;
     }
 
-    public void setfechaOlvidoPass(Date fechaOlvidoPass) {
+    public void setFechaOlvidoPass(Date fechaOlvidoPass) {
         this.fechaOlvidoPass = fechaOlvidoPass;
     }
-
+    
     public Ubicacion getUbicacion() {
         return ubicacion;
     }
@@ -86,7 +86,6 @@ public abstract class Persona implements Serializable {
     
     @Override
     public String toString() {
-        return "Entidades.Objetos2.Personas[ cedula=" + cedula + " ]";
+        return "Entidades.Objetos.Personas[ cedula=" + cedula + " ]";
     }
-    
 }

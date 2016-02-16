@@ -42,7 +42,7 @@ public class PersistenciaEmpleado implements IPersistenciaEmpleado {
                 emp = new Empleado();
                 emp.setCedula(rs.getString("Cedula"));
                 emp.setNombre(rs.getString("Nombre"));
-                emp.setfechaOlvidoPass(rs.getDate("FechaOlvidoPass"));
+                emp.setFechaOlvidoPass(rs.getDate("FechaOlvidoPass"));
                 lista.add(emp);
             }
             cnn.commit();
@@ -160,13 +160,23 @@ public class PersistenciaEmpleado implements IPersistenciaEmpleado {
        cs.setString("passw2", pass);
        ResultSet rs = cs.executeQuery();
        if (rs.next()) {
-                rs.first();
-                e.setCedula(rs.getString("Cedula"));
-                e.setPassw("Passw");
-       cs.execute();
-       e.setCedula(ced);
-       e.setPassw(pass);
-     }
+            rs.first();
+            e.setCedula(rs.getString("Cedula"));
+            e.setPassw(rs.getString("Passw"));
+            e.setNombre(rs.getString("Nombre"));
+            e.setTelefono(rs.getString("Telefono"));
+            e.setCelular(rs.getString("Celular"));
+            e.setFechaIngreso(rs.getDate("FechaIngreso"));
+            e.setTipoEmpleado(TipoEmpleado.valueOf(rs.getInt("TipoEmpleado")));
+            
+            //Sucursal
+            Sucursal s = new Sucursal();
+            s.setIdSuc(rs.getInt("IdSuc"));
+            e.setSucursal(s);
+//            cs.execute();
+//            e.setCedula(ced);
+//            e.setPassw(pass);
+          }
      }
      catch (Exception ex) 
      {

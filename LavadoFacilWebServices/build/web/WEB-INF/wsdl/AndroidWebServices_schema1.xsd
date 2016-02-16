@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xs:schema version="1.0" targetNamespace="http://LavadoFacilWebServices/" xmlns:tns="http://LavadoFacilWebServices/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <xs:element name="BuscarPersona" type="tns:BuscarPersona"/>
+  <xs:element name="BuscarPersona" nillable="true" type="tns:buscarPersona"/>
 
-  <xs:element name="BuscarPersonaResponse" type="tns:BuscarPersonaResponse"/>
+  <xs:element name="BuscarPersonaResponse" nillable="true" type="tns:buscarPersonaResponse"/>
 
-  <xs:element name="Exception" type="tns:Exception"/>
+  <xs:element name="LoginCliente" nillable="true" type="tns:loginCliente"/>
 
-  <xs:element name="LoginCliente" type="tns:LoginCliente"/>
+  <xs:element name="LoginClienteResponse" nillable="true" type="tns:loginClienteResponse"/>
 
-  <xs:element name="LoginClienteResponse" type="tns:LoginClienteResponse"/>
+  <xs:element name="WebServiceException" type="tns:WebServiceException"/>
 
-  <xs:complexType name="BuscarPersona">
+  <xs:complexType name="buscarPersona">
     <xs:sequence>
       <xs:element name="ced" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="BuscarPersonaResponse">
+  <xs:complexType name="buscarPersonaResponse">
     <xs:sequence>
       <xs:element name="return" type="tns:persona" minOccurs="0"/>
     </xs:sequence>
@@ -27,11 +27,11 @@
     <xs:sequence>
       <xs:element name="cedula" type="xs:string" minOccurs="0"/>
       <xs:element name="celular" type="xs:string" minOccurs="0"/>
+      <xs:element name="fechaOlvidoPass" type="xs:dateTime" minOccurs="0"/>
       <xs:element name="nombre" type="xs:string" minOccurs="0"/>
       <xs:element name="passw" type="xs:string" minOccurs="0"/>
       <xs:element name="telefono" type="xs:string" minOccurs="0"/>
       <xs:element name="ubicacion" type="tns:ubicacion" minOccurs="0"/>
-      <xs:element name="fechaOlvidoPass" type="xs:dateTime" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -44,20 +44,21 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="Exception">
+  <xs:complexType name="WebServiceException">
     <xs:sequence>
+      <xs:element name="faultInfo" type="xs:string" minOccurs="0"/>
       <xs:element name="message" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="LoginCliente">
+  <xs:complexType name="loginCliente">
     <xs:sequence>
       <xs:element name="ced" type="xs:string" minOccurs="0"/>
       <xs:element name="passw" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="LoginClienteResponse">
+  <xs:complexType name="loginClienteResponse">
     <xs:sequence>
       <xs:element name="return" type="tns:persona" minOccurs="0"/>
     </xs:sequence>

@@ -25,13 +25,7 @@
             android:background="@drawable/backgshape_linlogin"
             android:weightSum="1">
 
-            <ProgressBar
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/pbLoader"
-                android:indeterminate="true"
-                android:visibility="gone" />
+
 
             <TextView
                 android:layout_width="match_parent"

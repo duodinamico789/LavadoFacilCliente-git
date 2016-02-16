@@ -4,7 +4,9 @@ import android.duodinamico.servicios.Interface.IWebServices;
 import android.util.Log;
 
 import Entidades.Objetos.Cliente;
+import Entidades.Objetos.Empleado;
 import Entidades.Objetos.Persona;
+import Entidades.Objetos.Ubicacion;
 import Logica.Clases.FabricaLogica;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -15,6 +17,9 @@ import org.ksoap2.serialization.PropertyInfo;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WebServices implements IWebServices {
     static String tag = "WebServices";
@@ -39,7 +44,7 @@ public class WebServices implements IWebServices {
      http://www.ibm.com/developerworks/library/ws-android/
      */
 
-    private static final String currentIpPlusPort = "192.168.1.47:8080";
+    private static final String currentIpPlusPort = "192.168.1.41:8080";
 
     private static final String NAMESPACE = "http://LavadoFacilWebServices/";
     private static String URL = "http://" +
@@ -54,23 +59,22 @@ public class WebServices implements IWebServices {
             request.addProperty("ced", ced);
             SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
             envelope.setOutputSoapObject(request);
+            envelope.addMapping(NAMESPACE, "Persona", Persona.class);
+            envelope.addMapping(NAMESPACE, "Cliente", Cliente.class);
+            envelope.addMapping(NAMESPACE, "Empleado", Empleado.class);
             HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
             androidHttpTransport.call(NAMESPACE + METHOD_NAME, envelope);
-            //SoapPrimitive  resultsRequestSOAP = (SoapPrimitive) envelope.getResponse();
-
-            if(envelope.bodyIn == null)
-                throw new Exception("La consulta no trajo ningún resultado.");
-
-            SoapObject resultsRequestSOAP = (SoapObject) envelope.bodyIn;
-
-            Persona resultado = (Persona)envelope.getResponse();
-
-            return resultado;
+            return ParseUtils.getPersonaFromResponse(
+                    Enumeraciones.TipoPersona.Cliente,
+                   (SoapObject)envelope.getResponse(),
+                    true);
         } catch (IOException e) {
-            Log.e(tag, e.getMessage(), e);
-            throw e;
+            String msj = "Ha ocurrido un error de conexión con el servidor. Intente nuevamente más tarde.";
+            Log.e(tag, msj, e);
+            throw new IOException(msj);
         }
     }
+
 
     @Override
     public Cliente LoginCliente (String ced, String passw)throws Exception {
@@ -81,17 +85,20 @@ public class WebServices implements IWebServices {
             request.addProperty("ced", ced);
             request.addProperty("passw", passw);
             SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+
             envelope.setOutputSoapObject(request);
+            envelope.addMapping(NAMESPACE, "Cliente", Cliente.class);
+            envelope.addMapping(NAMESPACE, "Ubicacion", Ubicacion.class);
             HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
             androidHttpTransport.call(NAMESPACE + METHOD_NAME, envelope);
-            SoapPrimitive  resultsRequestSOAP = (SoapPrimitive) envelope.getResponse();
-
-            String resultado = resultsRequestSOAP.toString();
-
-            return null;
+            return (Cliente)ParseUtils.getPersonaFromResponse(
+                    Enumeraciones.TipoPersona.Cliente,
+                    (SoapObject)envelope.getResponse(),
+                    false);
         } catch (IOException e) {
-            Log.e(tag, e.getMessage(), e);
-            throw e;
+            String msj = "Ha ocurrido un error de conexión con el servidor. Intente nuevamente más tarde.";
+            Log.e(tag, msj, e);
+            throw new IOException(msj);
         }
     }
 }

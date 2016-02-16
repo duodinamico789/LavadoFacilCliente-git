@@ -52,34 +52,9 @@ public class Ubicacion implements Serializable {
         this.ciudad = ciudad;
     }
 
-    /*public List<Persona> getPersonasList() {
-        return personasList;
-    }
-
-    public void setPersonasList(List<Persona> personasList) {
-        this.personasList = personasList;
-    }
-
-    public List<Sucursales> getSucursalesList() {
-        return sucursalesList;
-    }
-
-    public void setSucursalesList(List<Sucursales> sucursalesList) {
-        this.sucursalesList = sucursalesList;
-    }
-
-    public List<Tintorerias> getTintoreriasList() {
-        return tintoreriasList;
-    }
-
-    public void setTintoreriasList(List<Tintorerias> tintoreriasList) {
-        this.tintoreriasList = tintoreriasList;
-    }*/
-
     
     @Override
     public String toString() {
-        return "Entidades.Objetos2.Ubicaciones[ direccion=" + direccion + " ]";
+        return "Entidades.Objetos.Ubicaciones[ direccion=" + direccion + " ]";
     }
-    
 }

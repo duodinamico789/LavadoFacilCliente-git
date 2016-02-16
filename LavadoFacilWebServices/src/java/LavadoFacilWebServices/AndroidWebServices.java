@@ -1,6 +1,8 @@
 package LavadoFacilWebServices;
 
+import Entidades.Objetos.Prenda;
 import Entidades.Utilidades;
+import java.util.LinkedList;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -40,5 +42,15 @@ public class AndroidWebServices {
         }
     }
     
-    
+    @WebMethod(operationName = "ListarPrendas")
+    public LinkedList<Entidades.Objetos.Prenda> ListarPrendas() throws WebServiceException {
+        try {
+            return Logica.Clases.FabricaLogica.getInstancia()
+                    .getILogicaPrenda().ListarPrendas();
+        } catch (Exception e) {
+            throw new WebServiceException(
+                    e.getClass().getName(), 
+                    e.getMessage());
+        }
+    }
 }

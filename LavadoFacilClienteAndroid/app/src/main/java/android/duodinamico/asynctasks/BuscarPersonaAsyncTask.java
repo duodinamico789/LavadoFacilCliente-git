@@ -20,19 +20,17 @@ public class BuscarPersonaAsyncTask extends AsyncTask<String, Void, Persona> {
     private Exception exception;
     private final EditText txtPassw;
     private final EditText txtCedula;
-    private ProgressBar pbLoader;
 
     public BuscarPersonaAsyncTask(LoginActivity activity) {
         this.activity = activity;
         this.exception = null;
         this.txtPassw = (EditText) activity.findViewById(R.id.txtPassw);
         this.txtCedula = (EditText) activity.findViewById(R.id.txtCedula);
-        this.pbLoader = (ProgressBar) activity.findViewById(R.id.pbLoader);
     }
 
     @Override
     protected void onPreExecute() {
-        pbLoader.setVisibility(View.VISIBLE);
+        activity.setProgressBarIndeterminateVisibility(true);
     }
 
     @Override
@@ -54,7 +52,7 @@ public class BuscarPersonaAsyncTask extends AsyncTask<String, Void, Persona> {
     @Override
     protected void onPostExecute(Persona persona) {
         try {
-            pbLoader.setVisibility(View.GONE);
+            activity.setProgressBarIndeterminateVisibility(false);
 
             if(exception != null)
                 throw exception;

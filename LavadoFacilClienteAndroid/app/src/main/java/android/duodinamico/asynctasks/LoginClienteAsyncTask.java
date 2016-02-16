@@ -16,17 +16,15 @@ import Entidades.Objetos.Persona;
 public class LoginClienteAsyncTask extends AsyncTask<String, Void, Persona> {
     private LoginActivity activity;
     private Exception exception;
-    private ProgressBar pbLoader;
 
     public LoginClienteAsyncTask(LoginActivity activity) {
         this.activity = activity;
         this.exception = null;
-        this.pbLoader = (ProgressBar) activity.findViewById(R.id.pbLoader);
     }
 
     @Override
     protected void onPreExecute() {
-        pbLoader.setVisibility(View.VISIBLE);
+        activity.setProgressBarIndeterminateVisibility(true);
     }
 
     @Override
@@ -48,7 +46,7 @@ public class LoginClienteAsyncTask extends AsyncTask<String, Void, Persona> {
     @Override
     protected void onPostExecute(Persona persona) {
         try {
-            pbLoader.setVisibility(View.GONE);
+            activity.setProgressBarIndeterminateVisibility(false);
 
             if(exception != null)
                 throw exception;

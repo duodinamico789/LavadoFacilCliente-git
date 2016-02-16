@@ -1,9 +1,9 @@
 package Entidades.Objetos;
 
+import Entidades.Enumeraciones.TipoEmpleado;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 public class Empleado extends Persona implements Serializable {
     private BigDecimal sueldo;
@@ -58,5 +58,5 @@ public class Empleado extends Persona implements Serializable {
 
     public void setSucursal(Entidades.Objetos.Sucursal suc) {
         this.suc = suc;
-    }  
+    } 
 }

@@ -142,90 +142,6 @@ public class PersistenciaTintorerias implements Persistencia.Interfaces.IPersist
         return resultado;
     }
     
-//    @Override
-//    public Tintoreria BuscarTintoreria(String nombre) throws SQLException { 
-//        Connection cnn = null;
-//        Tintoreria tin = null;
-//        int resultado;
-//        
-//        try { 
-//            cnn = Conexion.ConectarMysql("localhost", 3306, "root", "", "lavadero_01");
-//            cnn.setAutoCommit(false);
-//            
-//            CallableStatement cs = cnn.prepareCall("{ call BuscarTintoreria( ?,? ) }");
-//            cs.setString("Nombre2", nombre);
-//            cs.registerOutParameter("result", java.sql.Types.INTEGER);
-//            cs.execute();
-//            resultado = cs.getInt("result");
-//            
-//            if(resultado ==1)
-//            {
-//             CallableStatement cs2 = cnn.prepareCall("{ call BuscarTintoreria( ?,? ) }");
-//             cs2.setString("Nombre2", nombre);
-//             cs2.registerOutParameter("result", java.sql.Types.INTEGER);
-//             cs2.execute();
-//             ResultSet rs = cs.executeQuery();
-//             ResultSet rs2 = cs2.executeQuery();
-//             LinkedList<Sucursal> sucus = new LinkedList<Sucursal>();
-//            while(rs.next())
-//            {
-//              Sucursal s = new Sucursal();
-//              Ubicacion ub2 = new Ubicacion();
-//              ub2.setDireccion(rs.getString("Direccion"));//arreglar direccion de tintoreria
-//              s.setIdSuc(rs.getInt("IdSuc"));
-//              s.setNombreSuc(rs.getString("NombreSuc")); 
-//              s.setUbicacion(ub2);
-//              sucus.add(s);
-//            }
-//            if(rs2.next()) {
-//                rs2.first();
-//                tin = new Tintoreria();
-//                tin.setIdTint(rs2.getInt("IdTint"));
-//                tin.setNombre(rs2.getString("Nombre"));
-//                tin.setTelefono(rs2.getString("Telefono"));
-//                Ubicacion ub = new Ubicacion();
-//                ub.setId(rs2.getInt("Id"));
-//                ub.setDireccion(rs2.getString("Direccion"));
-//                ub.setBarrio(rs2.getString("Barrio"));
-//                ub.setCiudad(rs2.getString("Ciudad"));
-//                tin.setUbicacion(ub);
-//                tin.setSucursalCercana(sucus);
-//            }
-//            }
-//            else if(resultado==2)
-//            {
-//                ResultSet rs = cs.executeQuery();
-//                if(rs.next()) {
-//                tin = new Tintoreria();
-//                tin.setIdTint(rs.getInt("IdTint"));
-//                tin.setNombre(rs.getString("Nombre"));
-//                tin.setTelefono(rs.getString("Telefono"));
-//                Ubicacion ub = new Ubicacion();
-//                ub.setDireccion(rs.getString("Direccion"));
-//                ub.setBarrio(rs.getString("Barrio"));
-//                ub.setCiudad(rs.getString("Ciudad"));
-//                tin.setUbicacion(ub);
-//                tin.setSucursalCercana(null);
-//            }
-//            }
-//            else if( resultado==-1)
-//            {
-//             throw new Exception("Error al intentar ejecutar la operacion");
-//            }
-//            cnn.commit();
-//        } 
-//        catch (Exception ex) 
-//        {
-//            System.out.println(ex.toString() + " - " + ex.getMessage());
-//            cnn.rollback();
-//        } 
-//        finally 
-//        {
-//            cnn.close();
-//        } 
-//        return tin;
-//    } 
-    
     @Override
     public Tintoreria BuscarTintoreria(String nombre) throws SQLException {
         Connection cnn = null;
@@ -244,7 +160,6 @@ public class PersistenciaTintorerias implements Persistencia.Interfaces.IPersist
 
             if (resultado != -1) {
                 ResultSet rs = cs.executeQuery();
-                LinkedList<Sucursal> sucus = new LinkedList<Sucursal>();
                 while (rs.next()) {
                     tin = new Tintoreria();
                     int idTint = rs.getInt("IdTint");
@@ -259,8 +174,6 @@ public class PersistenciaTintorerias implements Persistencia.Interfaces.IPersist
                     tin.setUbicacion(ub);
                     
                     tin.setSucursalCercana(PersistenciaSucursales.getInstancia().ListarSucursalesPorTint(idTint));
-                    //Aca hacer un metodo en persistenciaSucursales "ListarSucursalesPorTint"
-                    //Para traer la lista de sucs asociadas
                     
                 }
             } else {
@@ -351,27 +264,23 @@ public class PersistenciaTintorerias implements Persistencia.Interfaces.IPersist
     }
     
     @Override
-    public LinkedList<Tintoreria> ListarTintorerias() throws SQLException {
+    public LinkedList<Tintoreria> ListarTintorerias(int idSuc2) throws SQLException {
         Connection cnn = null;
         Tintoreria tint1 = null;
         LinkedList<Tintoreria> tintorerias = null;
         try {
             cnn = Conexion.ConectarMysql("localhost", 3306, "root", "", "lavadero_01");
             cnn.setAutoCommit(false);
-            LinkedList<Sucursal>ssss = new LinkedList<Sucursal>();
-            CallableStatement cs = cnn.prepareCall("{ call ListarTintorerias() }");
-            CallableStatement cs2 = cnn.prepareCall("{ call ListarTintorerias() }");
+            //LinkedList<Sucursal>ssss = new LinkedList<Sucursal>();
+            CallableStatement cs = cnn.prepareCall("{ call ListarTintorerias(?) }");
+             cs.setInt("idSuc2",idSuc2);
             ResultSet rs = cs.executeQuery();
-            ResultSet rs2 = cs2.executeQuery();
             tintorerias = new LinkedList<>();
-            while(rs.next()) {      //NO ANDA, VER COMO TRAER LA LISTA DE SUCURSALES EN TINTORERIA    
-              while(rs2.next())
-              {
+            while(rs.next()) {        
               Sucursal s = new Sucursal();
-              s.setIdSuc(rs2.getInt("IdSuc"));
-              s.setNombreSuc(rs2.getString("NombreSuc"));
-              ssss.add(s);
-              }          
+              s.setIdSuc(rs.getInt("IdSuc"));
+              s.setNombreSuc(rs.getString("NombreSuc"));
+             // ssss.add(s);      
               tint1 = new Tintoreria();
               tint1.setNombre(rs.getString("Nombre"));
               tint1.setTelefono(rs.getString("Telefono"));
@@ -380,7 +289,7 @@ public class PersistenciaTintorerias implements Persistencia.Interfaces.IPersist
               u.setBarrio(rs.getString("Barrio"));
               u.setCiudad(rs.getString("Ciudad"));
               tint1.setUbicacion(u);
-              tint1.setSucursalCercana(ssss);
+              //tint1.setSucursalCercana(ssss);
               tintorerias.add(tint1);
             } 
             cnn.commit();

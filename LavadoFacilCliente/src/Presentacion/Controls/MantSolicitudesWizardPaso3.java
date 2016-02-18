@@ -51,10 +51,31 @@ public class MantSolicitudesWizardPaso3 extends javax.swing.JPanel {
     public MantSolicitudesWizardPaso3() {
         initComponents();     
     }
+    public void SoloTint()
+    {
+      cboOpciones.setEnabled(false);
+      btnAgregarOpc.setEnabled(false);
+      btnQuitarOpc.setEnabled(false);
+      tableOpciones.setEnabled(false);
+      lblMensaje.setText("La ropa ingresada solo corresponde a tintoreria");
+    }
+    
+    public void ConPrenASuc()
+    {
+      cboOpciones.setEnabled(true);
+      btnAgregarOpc.setEnabled(true);
+      btnQuitarOpc.setEnabled(true);
+      tableOpciones.setEnabled(true);
+      lblMensaje.setText("");      
+    }
     
     //<editor-fold defaultstate="collapsed" desc="Getters propiedades">
     public LinkedList<Opcion> getListaOpcionesTabla() {
         return listaOpcionesTabla;
+    }
+    public void setObservaciones(String text)
+    {
+      txtObservaciones2.setText(text);
     }
     
     public String getObservaciones() {
@@ -66,6 +87,18 @@ public class MantSolicitudesWizardPaso3 extends javax.swing.JPanel {
         
     }
     //</editor-fold>    
+    public void setDelivery(boolean delivery)
+    {
+      sdpFechaEntrega.setdelivery(delivery);
+    }
+    public void setfecha(Calendar fecha) throws Exception
+    {
+     sdpFechaEntrega.setFecha(fecha);
+    }
+    public void getListaOpc(LinkedList<Opcion>listOp)
+    {
+     listaOpcionesTabla = listOp;
+    }
 
     
     public BrechaHoraria getBrechaHoraria() throws Exception
@@ -135,7 +168,7 @@ public class MantSolicitudesWizardPaso3 extends javax.swing.JPanel {
             msj = "La fecha de entrega debe ser posterior a la fecha actual. ";
         }
         
-        if(listaOpcionesTabla.size() == 0) {
+        if(listaOpcionesTabla.size() == 0 && cboOpciones.isEnabled() == true) {
             msj = "Por favor, ingrese al menos una opción en la tabla de opciones.";
         }
         
@@ -267,6 +300,7 @@ public class MantSolicitudesWizardPaso3 extends javax.swing.JPanel {
         txtObservaciones2 = new javax.swing.JTextArea();
         jLabel5 = new javax.swing.JLabel();
         sdpFechaEntrega = new Presentacion.Controls.PanelSelBrecha();
+        lblMensaje = new javax.swing.JLabel();
 
         setMinimumSize(new java.awt.Dimension(556, 459));
         setPreferredSize(new java.awt.Dimension(556, 459));
@@ -317,6 +351,8 @@ public class MantSolicitudesWizardPaso3 extends javax.swing.JPanel {
 
         jLabel5.setText("Observaciones:");
 
+        lblMensaje.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -346,7 +382,10 @@ public class MantSolicitudesWizardPaso3 extends javax.swing.JPanel {
                                 .addComponent(sdpFechaEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(10, 10, 10))
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblMensaje)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -362,13 +401,15 @@ public class MantSolicitudesWizardPaso3 extends javax.swing.JPanel {
                     .addComponent(cboOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jspOpciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addComponent(lblMensaje)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sdpFechaEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(sdpFechaEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(71, 71, 71))
+                .addGap(70, 70, 70))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -434,6 +475,7 @@ public class MantSolicitudesWizardPaso3 extends javax.swing.JPanel {
     private javax.swing.JComboBox cboOpciones;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jspOpciones;
+    private javax.swing.JLabel lblMensaje;
     private javax.swing.JLabel lblSeleccExc;
     private javax.swing.JLabel lblTitulo;
     private Presentacion.Controls.PanelSelBrecha sdpFechaEntrega;

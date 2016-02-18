@@ -44,6 +44,12 @@ public class LogicaExcepciones implements ILogicaExcepciones {
     }
 
     @Override
+    public LinkedList<Excepcion> ListarExcepciones(int IdPda) throws SQLException {
+        Persistencia.Interfaces.IPersistenciaExcepciones exc = Persistencia.Clases.FabricaPersistencia.getInstancia().getIpersistenciaExcepciones();
+        return exc.ListarExcepciones(IdPda);
+    }
+    
+    @Override
     public LinkedList<Excepcion> ListarExcepciones() throws SQLException {
         Persistencia.Interfaces.IPersistenciaExcepciones exc = Persistencia.Clases.FabricaPersistencia.getInstancia().getIpersistenciaExcepciones();
         return exc.ListarExcepciones();

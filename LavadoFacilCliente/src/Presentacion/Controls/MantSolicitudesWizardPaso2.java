@@ -24,6 +24,8 @@ import org.hamcrest.Matchers;
 public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements NotificarResultListener, PrendaExistsInListListener {
     //<editor-fold defaultstate="collapsed" desc="ParentFrameSolicAdapter">
     private final List<ParentFrameSolicAdapter> listeners = new ArrayList<>();
+    int cantlav = 0;
+    int limitepren = 12;
     
     public void addParentFrameSolicAdapter(ParentFrameSolicAdapter toAdd) {
         listeners.add(toAdd);
@@ -48,6 +50,12 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
     private LinkedList<PrendaExtended> listaPrendasSol = new LinkedList<>();
     private PrendaExtended selectedPrenda;
     private LinkedList<String> listaTiposPendasSol;
+    
+    
+    public void getPrendaSol(LinkedList<PrendaExtended>pre)
+    {
+      listaPrendasSol = pre;
+    }
     
     public LinkedList<PrendaExtended> getListaPrendasExtSol() {
         return listaPrendasSol;
@@ -98,10 +106,19 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
 //        for(PrendaExtended pe : listaPrendasSol) {
 //            aux.add(pe.getPrenda());
 //        }  
-        SetearTabla(listaPrendasSol, tablePrendas);        
+        SetearTabla(listaPrendasSol);        
+    }    
+    public int retornoCantLav()
+    {
+      return cantlav;
     }    
     
-    public void SetearTabla(LinkedList<PrendaExtended> pren, javax.swing.JTable tabla) {
+    public void setCantLav(int valor)
+    {
+      txtcantlav.setText(String.valueOf(valor));
+    }
+    public void SetearTabla(LinkedList<PrendaExtended> pren) {
+        int aux = 0;
         try {
             Object[][] datos;
             
@@ -114,10 +131,55 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
                     datos[i][0] = pren.get(i).getPrenda().getTipo();
                     datos[i][1] = String.valueOf(pren.get(i).getCantPrendas());
                     datos[i][2] = ObtenerExcepcionesStr(pren.get(i).getPrenda().getExcepcionesList());
+                    
+                    aux = aux + pren.get(i).getCantPrendas();
                 }
             }
+            if(aux==0)
+            {
+              cantlav =0;
+            }
+            if(aux >0 && cantlav == 0)
+            {
+              cantlav = 1;
+            }
+            if(aux>limitepren)
+            {
+                int veces =0;
+                int v =aux-limitepren;
+                if(v>12)
+                {
+                    while(v>=12)
+                    {
+                      v = v-12;  
+                      veces++;
+                }
+                    cantlav = cantlav + veces;
+                    limitepren = limitepren +12*veces;
+                }
+                else
+                {
+                    cantlav = cantlav + 1;
+                    limitepren = limitepren +12;
+            }
                 
-            tabla.setModel(
+            }
+            
+            if(limitepren - aux >12)
+            {
+                int veces =0;
+                int v =limitepren - aux;
+                while(v>=12)
+                {
+                  v = v-12;  
+                  veces++;
+                }
+                cantlav = cantlav - veces;
+                limitepren = limitepren -12*veces;
+            }
+
+            setCantLav(cantlav);
+            tablePrendas.setModel(
                 new DefaultTableModel(datos, Constantes.prendasExtended_titulosColumnas){
                     @Override
                     public boolean isCellEditable(int row, int column) {
@@ -213,7 +275,7 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
             }
             
             //Actualizamos tabla
-            SetearTabla(listaPrendasSol, tablePrendas); 
+            SetearTabla(listaPrendasSol); 
         }
     }
     
@@ -233,7 +295,6 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel8 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -244,6 +305,8 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
         jbtnUpdate = new javax.swing.JButton();
         jbtnEliminar = new javax.swing.JButton();
         jSeparator = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtcantlav = new javax.swing.JTextField();
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel8.setText("Lista de prendas:");
@@ -300,6 +363,8 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
         jSeparator.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Presentacion/Resources/Separator-icon.png"))); // NOI18N
         jSeparator.setPreferredSize(new java.awt.Dimension(6, 24));
 
+        jLabel2.setText("Numeros de lavados a realizar:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -310,9 +375,7 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
                     .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE))
                         .addGap(41, 41, 41)
                         .addComponent(jbtnAlta, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -323,7 +386,12 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
                         .addGap(10, 10, 10)
                         .addComponent(jSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtcantlav, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -341,8 +409,12 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
                         .addComponent(jSeparator, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jbtnEliminar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jbtnAlta, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtcantlav, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -423,7 +495,7 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
                 int opcionElegida = JOptionPane.showConfirmDialog(null, "Está seguro que desea eliminar esta prenda?", "Está seguro?", JOptionPane.YES_NO_OPTION);
                 if (opcionElegida == JOptionPane.YES_OPTION) {
                     listaPrendasSol.remove(selectedPrenda);
-                    SetearTabla(listaPrendasSol, tablePrendas);
+                    SetearTabla(listaPrendasSol);
                 }
             }
         } catch (Exception ex) {
@@ -435,6 +507,7 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jSeparator;
@@ -442,6 +515,7 @@ public class MantSolicitudesWizardPaso2 extends javax.swing.JPanel implements No
     private javax.swing.JButton jbtnEliminar;
     private javax.swing.JButton jbtnUpdate;
     private javax.swing.JTable tablePrendas;
+    private javax.swing.JTextField txtcantlav;
     // End of variables declaration//GEN-END:variables
 
 }

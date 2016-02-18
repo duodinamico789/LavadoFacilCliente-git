@@ -1,5 +1,6 @@
 package Logica.Clases;
 
+import Entidades.Datatypes.PrendaExtended;
 import Entidades.Objetos.Prenda;
 import Entidades.Objetos.PrendaEnvio;
 import java.util.LinkedList;
@@ -82,7 +83,7 @@ public class LogicaPrendas implements Logica.Interface.ILogicaPrendas {
     }
     
     @Override
-    public LinkedList<Prenda> ListarPrendasXSol(int idSol) throws Exception {
+    public LinkedList<PrendaExtended> ListarPrendasXSol(int idSol) throws Exception {
         Persistencia.Interfaces.IPersistenciaPrendas pre = Persistencia.Clases.FabricaPersistencia.getInstancia().getIPersistenciaPrenda();
         return pre.ListarPrendasXSol(idSol);
     }

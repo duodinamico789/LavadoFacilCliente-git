@@ -325,6 +325,10 @@ public class MantClientes extends BaseJFrame {
 
                     if (cli != null) {
                         Ubicacion ub = panelUbicacion1.AltaUbicacion();
+                        if(ub == null)
+                        {
+                          throw new Exception("Compruebe datos de ubicacion");
+                        }
                         cli.setUbicacion(ub);
                     }
                     Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().AltaPersona(cli);
@@ -357,6 +361,10 @@ public class MantClientes extends BaseJFrame {
 
                     if (cli != null) {
                         Ubicacion ub = panelUbicacion1.ModificarUbicacion();
+                        if(ub == null)
+                        {
+                          throw new Exception("Compruebe datos de ubicacion");
+                        }
                         cli.setUbicacion(ub);
                     }
                     listaper = Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().ListarClientesXFechareg();
@@ -367,7 +375,7 @@ public class MantClientes extends BaseJFrame {
                             totales++;
                         }
                     }
-                    Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaRelacion_UbicPerson(ubactual.getId(), cli.getCedula());
+                  //  Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaRelacion_UbicPerson(ubactual.getId(), cli.getCedula());
                     if (totales == 0 && !cli.getUbicacion().getDireccion().equals(ubactual.getDireccion())) {
                         Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaUbicacion(ubactual.getId());
                     }
@@ -391,9 +399,11 @@ public class MantClientes extends BaseJFrame {
             public void run() {
                 try {
                     MostrarLoading(true);
-                    Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaRelacion_UbicPerson(cli.getUbicacion().getId(), cli.getCedula());
-                    Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().BajaPersona(txtcedula.getText());
+                    int retorno = Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().BajaPersona(txtcedula.getText());
+                    if(retorno ==1)
+                    {
                     Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaUbicacion(cli.getUbicacion().getId());
+                    }
                     reinicio();
                     lblerror.setText("Baja exitosa");
                 } catch (Exception es) {

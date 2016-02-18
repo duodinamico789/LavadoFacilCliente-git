@@ -8,7 +8,8 @@ import javax.swing.JOptionPane;
 public class ListadoTintorerias extends javax.swing.JPanel {
     private LinkedList<Tintoreria> lista = null;
     private LinkedList<Sucursal> listasuc;
-public ListadoTintorerias() {
+    
+    public ListadoTintorerias() {
         initComponents();
          try
         {
@@ -111,27 +112,22 @@ public ListadoTintorerias() {
     private void btnListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListarActionPerformed
        try
        {
-        lista= Logica.Clases.FabricaLogica.getInstancia().getILogicaTintoreria().ListarTintorerias();   
+        int idsuc = 0;   
         if(jcombosucursales.getSelectedIndex()==0)
         {
+            lista= Logica.Clases.FabricaLogica.getInstancia().getILogicaTintoreria().ListarTintorerias(0);
             SetearTabla(lista);
         }
         else
         {
-          LinkedList<Tintoreria>listaAux = new LinkedList<Tintoreria>();  
-          String s = jcombosucursales.getSelectedItem().toString();
-          for(int k=0; k< lista.size(); k++)
+         for(Sucursal s : listasuc)
           {
-            Tintoreria t = lista.get(k);
-            for(int j = 0; j<t.getSucursalCercana().size();j++)
+           if(s.getNombreSuc().equals(jcombosucursales.getSelectedItem().toString()))
             {
-              Sucursal scus = t.getSucursalCercana().get(j);
-              if(scus.getNombreSuc().equals(s))
-              {
-                 listaAux.add(t);
-              }
+             idsuc = s.getIdSuc();
             }
           }
+          lista= Logica.Clases.FabricaLogica.getInstancia().getILogicaTintoreria().ListarTintorerias(idsuc);   
           SetearTabla(lista);
         }
            

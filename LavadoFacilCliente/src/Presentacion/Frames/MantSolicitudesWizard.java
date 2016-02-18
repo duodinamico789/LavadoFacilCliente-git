@@ -14,11 +14,14 @@ import Entidades.Objetos.SolicitudDetalle;
 import Entidades.Utilidades;
 import Logica.Clases.FabricaLogica;
 import Presentacion.Interfaces.ParentFrameSolicAdapter;
+import Presentacion.Utils.ClienteUtils;
 import java.awt.CardLayout;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class MantSolicitudesWizard extends BaseJFrame implements ParentFrameSolicAdapter {
@@ -28,33 +31,64 @@ public class MantSolicitudesWizard extends BaseJFrame implements ParentFrameSoli
     private CardLayout cardLayout;
     private LinkedList<String> steps;
     private int index;
+    private boolean Modifica;
+    private int AuxId;
     
     public MantSolicitudesWizard() {
         initComponents();
     }
+    public MantSolicitudesWizard(Solicitud s, Empleado emp)
+    {
+        initComponents();
+        try
+        {
+         AuxId = s.getId();
+         Modifica = true;
+         ProcesarPrimerCargado(emp);
+         Cliente c = (Cliente) FabricaLogica.getInstancia().getILogicaPersonas().BuscarPersona(s.getCedulaCli().getCedula());     
+         LinkedList<PrendaExtended> listaPE = FabricaLogica.getInstancia().getILogicaPrenda().ListarPrendasXSol(s.getId());
+         mantSolicitudesWizardPaso1.MostrarCliente(c);
+         mantSolicitudesWizardPaso2.getPrendaSol(listaPE);
+         mantSolicitudesWizardPaso2.setCantLav(s.getCantidadLavados());
+         mantSolicitudesWizardPaso2.SetearTabla(listaPE);
+         mantSolicitudesWizardPaso3.getListaOpc((LinkedList<Opcion>) s.getOpcionesList());
+         mantSolicitudesWizardPaso3.SetearTabla(s.getOpcionesList());
+         if(s.getDelivery())
+         {
+           mantSolicitudesWizardPaso3.setDelivery(s.getDelivery());
+         }
+         
+          Calendar ca = DateToCalendar(s.getFechaEntrega());
+          mantSolicitudesWizardPaso3.setfecha(ca);
+          mantSolicitudesWizardPaso3.setObservaciones(s.getObservaciones());
+          mantSolicitudesWizardPaso4.isModifica(Modifica);
+         
+        }
+        catch(Exception es)
+        {
+          JOptionPane.showMessageDialog(MantSolicitudesWizard.this, es.getMessage().substring(0, 50));
+        }
+    }
+    public static Calendar DateToCalendar(Date date){ 
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(date);
+      return cal;
+     }
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 MantSolicitudesWizard f = new MantSolicitudesWizard();
                 try {
-                    Empleado e = (Empleado)FabricaLogica.getInstancia().getILogicaPersonas().BuscarPersona("78810941");
-                    if(f.ProcesarPrimerCargado(e)) {
                         f.setVisible(true);
-                    }
                 } catch (Exception ex) {
                     if (ex instanceof NullPointerException)
-                        IniciarFrameError(Constantes.compartido_ErrorInesperadoNullPointer);
+                        ClienteUtils.IniciarFrameError(Constantes.compartido_ErrorInesperadoNullPointer);
                     else
-                        IniciarFrameError(ex.getMessage());
+                        ClienteUtils.IniciarFrameError(ex.getMessage());
                 }
             }
         });
-    }
-    
-    public static void IniciarFrameError(String mensajeError) {
-        ErrorInesperado frame = new ErrorInesperado();
-        frame.CorrerVentana(mensajeError);
     }
 
     @Override
@@ -67,7 +101,6 @@ public class MantSolicitudesWizard extends BaseJFrame implements ParentFrameSoli
         lblError.setText(mensaje);
     }
 
-    //MODIFICAR
     public boolean ProcesarPrimerCargado(Empleado _logueado) {
         boolean exito = false;
         try {
@@ -108,9 +141,15 @@ public class MantSolicitudesWizard extends BaseJFrame implements ParentFrameSoli
         }
         return exito;
     }
+
+//    public void ProcesarErrorConexionServidor(String message) {
+//        this.setEnabled(false);
+//        this.SetMensajeError(message);
+//    }
     
     private void InicializarSolicitud(Date fechaActual) throws Exception {
         solicitud = new Solicitud();
+        solicitud.setId(AuxId);
         solicitud.setEmpleado(logueado);
         solicitud.setCedulaCli((Cliente)mantSolicitudesWizardPaso1.getCli());
         solicitud.setSuc(logueado.getSucursal());
@@ -122,6 +161,7 @@ public class MantSolicitudesWizard extends BaseJFrame implements ParentFrameSoli
         solicitud.setOpcionesList(mantSolicitudesWizardPaso3.getListaOpcionesTabla());    
         solicitud.setDelivery(mantSolicitudesWizardPaso3.getIsDelivery());
         solicitud.setBrechaHoraria(mantSolicitudesWizardPaso3.getBrechaHoraria());
+        solicitud.setCantidadLavados(mantSolicitudesWizardPaso2.retornoCantLav());
         solicitud.setDetalles(getListaComoDetalle());
     }
     
@@ -167,15 +207,15 @@ public class MantSolicitudesWizard extends BaseJFrame implements ParentFrameSoli
             detalles.add(sd);
             linea++;
         }
+        BigDecimal cantLav = new BigDecimal(solicitud.getCantidadLavados());
         
         for(Opcion p : mantSolicitudesWizardPaso3.getListaOpcionesTabla()) {
             Prenda pre = new Prenda();
-            pre.setIdpda(1);
             SolicitudDetalle sd = new SolicitudDetalle();
             sd.setLinea(linea);
             sd.setCantidad(0);
             sd.setPrenda(pre);
-            precioTotal = precioTotal.add(p.getPrecio());
+            precioTotal = precioTotal.add(p.getPrecio().multiply(cantLav));
             sd.setPrecio(precioTotal);
             sd.setDescripcion(p.getNombre());
             detalles.add(sd);
@@ -366,6 +406,7 @@ public class MantSolicitudesWizard extends BaseJFrame implements ParentFrameSoli
                 @Override
                 public void run() {
                     try {
+                        boolean PrenSuc = false;
                         String error = Constantes.EMPTY;
                         switch(index) {
                             case 0:
@@ -375,9 +416,25 @@ public class MantSolicitudesWizard extends BaseJFrame implements ParentFrameSoli
                                 } 
                                 break;
                             case 1:
-                                if(mantSolicitudesWizardPaso2.getListaPrendasExtSol().size() == 0) {
+                                LinkedList<PrendaExtended>listaPre = mantSolicitudesWizardPaso2.getListaPrendasExtSol();
+                                if(listaPre.size() == 0) {
                                     error = "Ingrese al menos una prenda para poder continuar. ";
                                 } 
+                                for(PrendaExtended p : listaPre)
+                                {
+                                  if(p.getPrenda().getTintoreria() == false)
+                                  {
+                                    PrenSuc = true;
+                                  }
+                                }
+                                if(PrenSuc == false)
+                                {
+                                  mantSolicitudesWizardPaso3.SoloTint();
+                                }
+                                else
+                                {
+                                  mantSolicitudesWizardPaso3.ConPrenASuc();
+                                }
                                 break;
                             case 2:
                                 String msjError = mantSolicitudesWizardPaso3.ValidacionCorrecta();
@@ -475,6 +532,11 @@ public class MantSolicitudesWizard extends BaseJFrame implements ParentFrameSoli
             thread.start();
         }
     }//GEN-LAST:event_btnFinalizarMouseClicked
+
+    private boolean isModificar()
+    {
+      return Modifica;
+    }
 
     private void btnFinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalizarActionPerformed
         // TODO add your handling code here:

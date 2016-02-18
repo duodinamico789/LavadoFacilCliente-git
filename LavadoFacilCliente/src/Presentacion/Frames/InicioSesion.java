@@ -29,7 +29,6 @@ public class InicioSesion extends javax.swing.JFrame {
         btnPrimeraVez = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(400, 304));
 
         lblTitInicio.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         lblTitInicio.setText("Inicio de Sesion:");
@@ -59,6 +58,9 @@ public class InicioSesion extends javax.swing.JFrame {
             }
         });
 
+        lblerror.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblerror.setForeground(new java.awt.Color(255, 0, 51));
+
         txtpass.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
 
         lblTitInicio1.setBackground(java.awt.Color.white);
@@ -87,17 +89,12 @@ public class InicioSesion extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(lblTitInicio1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 10, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblTitInicio)
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(lblerror)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnPrimeraVez)
-                            .addComponent(btnOlvidoPass)))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(btnEntrar)
                         .addGroup(layout.createSequentialGroup()
@@ -107,7 +104,9 @@ public class InicioSesion extends javax.swing.JFrame {
                             .addGap(18, 18, 18)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(txtpass)
-                                .addComponent(txtcedula, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(txtcedula, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(btnOlvidoPass)
+                    .addComponent(btnPrimeraVez))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -126,14 +125,13 @@ public class InicioSesion extends javax.swing.JFrame {
                     .addComponent(txtpass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEntrar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblerror, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(3, 3, 3)
                         .addComponent(btnOlvidoPass)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPrimeraVez)))
-                .addContainerGap())
+                .addComponent(btnPrimeraVez)
+                .addGap(18, 18, 18)
+                .addComponent(lblerror, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -146,6 +144,11 @@ public class InicioSesion extends javax.swing.JFrame {
             }
             String ced = txtcedula.getText();
             e = Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().BuscarPersona(ced);
+
+            if(e == null)
+            {
+              throw new Exception("No existe usuario que esa cedula");
+            }
 
             if(e instanceof Cliente)
             {
@@ -160,13 +163,13 @@ public class InicioSesion extends javax.swing.JFrame {
                     throw new Exception("Debe ingresar el password");
                 }
                 String pass = txtpass.getText().toLowerCase();
-                e = Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().LoginEmpleado(ced, pass);
-                if (e.getCedula() != null) {
+                Empleado eAux = Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().LoginEmpleado(ced, pass);
+                if (e.getCedula().equals(eAux.getCedula())) {
                     VentanaPrincipal _form = new VentanaPrincipal((Empleado) e);
                     _form.setVisible(true);
                     this.setVisible(false);
                 } else {
-                    throw new Exception("Cedula o contraseña incorrecta");
+                    throw new Exception("contraseña incorrecta");
                 }
             }
         } catch (Exception ex) {

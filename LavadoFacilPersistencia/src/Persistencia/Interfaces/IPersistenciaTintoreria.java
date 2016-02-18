@@ -10,6 +10,6 @@ public interface IPersistenciaTintoreria {
     int ModificarTintoreria(Tintoreria tintoreria) throws SQLException;
     int BajaTintoreria(int idtint) throws SQLException;
     Tintoreria BuscarTintoreria(String nombre)throws SQLException;
-    LinkedList<Tintoreria> ListarTintorerias() throws SQLException; 
+    LinkedList<Tintoreria> ListarTintorerias(int idSuc2) throws SQLException; 
     
 }

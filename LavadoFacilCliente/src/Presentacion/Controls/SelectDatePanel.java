@@ -2,8 +2,6 @@ package Presentacion.Controls;
 
 import Presentacion.Interfaces.OkPressedListener;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class SelectDatePanel extends javax.swing.JPanel implements OkPressedListener {

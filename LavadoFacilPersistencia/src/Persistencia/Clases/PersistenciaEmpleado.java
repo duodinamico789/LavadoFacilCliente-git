@@ -291,8 +291,10 @@ public class PersistenciaEmpleado implements IPersistenciaEmpleado {
     }
 
     @Override
-    public void BajaEmpleado(String cedula) throws SQLException {
-        Connection cnn = null;
+    public int BajaEmpleado(String cedula) throws SQLException {
+    	int retorno = 0;    
+		Connection cnn = null;
+		
 
         try {
             int resultado = -1;
@@ -309,12 +311,16 @@ public class PersistenciaEmpleado implements IPersistenciaEmpleado {
             if (resultado == -1) {
                 throw new Exception("Error al intentar ejecutar la operacion");
             }
+			if(resultado == 2) {
+              retorno = 1;
+            }
             cnn.commit();
         } catch (Exception e) {
             cnn.rollback();
         } finally {
             cnn.close();
         }
+		return retorno;
     }
     @Override
     public Empleado BuscarEmpleado(String Cedula) throws SQLException {

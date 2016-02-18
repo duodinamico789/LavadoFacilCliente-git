@@ -1,6 +1,5 @@
 package Presentacion.Frames;
 
-import Entidades.Constantes;
 import Entidades.Objetos.Empleado;
 import Entidades.Enumeraciones.TipoEmpleado;
 import Presentacion.Interfaces.OpenFrameListener;
@@ -22,6 +21,9 @@ public class VentanaPrincipal extends BaseJFrame implements OpenFrameListener {
     private MantPrendas mantPrendas;
     private MantSolicitudesWizard mantSolicitudesWizard;
     private MantExcepciones mantExcepciones;
+    private MantSolicitudBusqueda mantSolicitudBusqueda;
+    private CambioEstadoSol cambioEstadoSol;
+    private ListadoSolicitud listadoSolicitud;
     
     
     Empleado usulogueado = null;
@@ -84,6 +86,9 @@ public class VentanaPrincipal extends BaseJFrame implements OpenFrameListener {
         btnMantBrechas = new javax.swing.JButton();
         btnConsultarContab = new javax.swing.JButton();
         btnMantExcepciones = new javax.swing.JButton();
+        btnBuscarSol = new javax.swing.JButton();
+        btnCambioEstadoSol = new javax.swing.JButton();
+        btnListadoSol = new javax.swing.JButton();
         jPanelInf = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -321,6 +326,30 @@ public class VentanaPrincipal extends BaseJFrame implements OpenFrameListener {
         });
         jPanelMedio.add(btnMantExcepciones);
 
+        btnBuscarSol.setText("Buscar Solicitud de lavado");
+        btnBuscarSol.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarSolActionPerformed(evt);
+            }
+        });
+        jPanelMedio.add(btnBuscarSol);
+
+        btnCambioEstadoSol.setText("Cambio Estado Solicitud");
+        btnCambioEstadoSol.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCambioEstadoSolActionPerformed(evt);
+            }
+        });
+        jPanelMedio.add(btnCambioEstadoSol);
+
+        btnListadoSol.setText("Listado Solicitudes");
+        btnListadoSol.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnListadoSolActionPerformed(evt);
+            }
+        });
+        jPanelMedio.add(btnListadoSol);
+
         getContentPane().add(jPanelMedio, java.awt.BorderLayout.CENTER);
 
         jPanelInf.setBackground(new java.awt.Color(51, 51, 51));
@@ -508,23 +537,40 @@ public class VentanaPrincipal extends BaseJFrame implements OpenFrameListener {
         }
     }//GEN-LAST:event_btnMantExcepcionesMouseClicked
 
-    public static void main(String args[]) {
-        /* Create and display the form */
-        String errorMessage = Constantes.EMPTY;
-        
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    //Borrar esto
-                    Empleado e = (Empleado)Logica.Clases.FabricaLogica.getInstancia()
-                            .getILogicaPersonas().BuscarPersona("47191557");
-                    new VentanaPrincipal(e).setVisible(true);
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
-                }
+    private void btnBuscarSolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarSolActionPerformed
+        try {
+            if (mantSolicitudBusqueda == null) {
+                mantSolicitudBusqueda = new MantSolicitudBusqueda(usulogueado);
             }
-        });
+            mantSolicitudBusqueda.setVisible(true);
+            
+
+        } catch (Exception es) {
+            JOptionPane.showMessageDialog(null, es.getMessage());
+        }
+    }//GEN-LAST:event_btnBuscarSolActionPerformed
+
+    private void btnCambioEstadoSolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambioEstadoSolActionPerformed
+                try {
+            if (cambioEstadoSol == null) {
+                cambioEstadoSol = new CambioEstadoSol();
+            }
+            cambioEstadoSol.setVisible(true);
+        } catch (Exception es) {
+            JOptionPane.showMessageDialog(null, es.getMessage());
+                }
+    }//GEN-LAST:event_btnCambioEstadoSolActionPerformed
+
+    private void btnListadoSolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListadoSolActionPerformed
+       try {
+            if (listadoSolicitud == null) {
+                listadoSolicitud = new ListadoSolicitud();
+            }
+            listadoSolicitud.setVisible(true);
+        } catch (Exception es) {
+            JOptionPane.showMessageDialog(null, es.getMessage());
     }
+    }//GEN-LAST:event_btnListadoSolActionPerformed
     
     @Override
     public void OpenFrameListener_Event(String formName) {
@@ -536,9 +582,12 @@ public class VentanaPrincipal extends BaseJFrame implements OpenFrameListener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBuscarSol;
+    private javax.swing.JButton btnCambioEstadoSol;
     private javax.swing.JButton btnClientes;
     private javax.swing.JButton btnConsultarContab;
     private javax.swing.JButton btnEmpleados;
+    private javax.swing.JButton btnListadoSol;
     private javax.swing.JButton btnMantBrechas;
     private javax.swing.JButton btnMantExcepciones;
     private javax.swing.JButton btnMantGastos;

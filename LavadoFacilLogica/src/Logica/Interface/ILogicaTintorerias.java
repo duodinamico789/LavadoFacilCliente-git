@@ -9,6 +9,6 @@ public interface ILogicaTintorerias {
     Tintoreria BuscarTintoreria(String nombre) throws Exception;
     int ModificarTintoreria(Tintoreria tin) throws Exception;
     int BajaTintoreria(int idtint) throws Exception;
-    LinkedList<Tintoreria> ListarTintorerias() throws Exception;
+    LinkedList<Tintoreria> ListarTintorerias(int idSuc2) throws Exception;
     
 }

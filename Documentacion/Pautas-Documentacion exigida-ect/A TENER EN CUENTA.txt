@@ -1,0 +1,28 @@
+DIMENSIONES: 
+
+-Arquitectura (distribucion. investigar lo de android). PUEDE SER PROTOTIPO. 				 
+
+-Clinete real (no es obligacion, pero seria bueno, experiencia real). Si se tiene un cliente, extender eso (no para el).  
+
+-Tecnologia (investigar una nueva tecnologia NODEJS - ANDROID - AZURE - HTML5 - CSS3 - ANGULARJS - ). 
+
+-investigacion (DE LA MANO CON LA TECNOLOGIA). --> REFERENCIAS DE FOROS, PAGINAS, GRAFICAS
+   alternativas de tecnologias, pesarlas/comparar,analizarlas y hacer tabla con la ventajas y desventajas de cada uno y 
+   darle un puntaje a cada una. Luego hacer una conlusion al finalizar proyecto. Ver poirque fue bueno o porque no.    
+
+-complejidad/realidad.
+
+DOCUMENTACION: 
+
+--->Producto (IS). es lo que se le da al cliente
+--->Planificacion (gantt)
+--->Proyecto (introduccion - conclusiones - trabajo futuro - lecciones aprendidas)
+
+
+--->un cuerpo principal (50 y 100 paginas). todo leido por el tribunal. Es para gente que sabe de lo que se habla. 
+--->Anexos. Puede o no puede ser leido por el tribunal. son detalles, no se asume que ellos leen esto. si no se leen
+se deberia entender bien.
+
+HACER UN CAPITULO CON INVESTIGACION con punteos.  
+
+MANEJO DE RIESGOS -->RIESGOS TECNOLOGICOS --> RIESGOS CON EL CLIENTE  -->RIESGO ENTRE DESARROLLADORES.  

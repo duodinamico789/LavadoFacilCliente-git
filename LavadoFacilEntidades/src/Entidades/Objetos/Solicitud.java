@@ -19,6 +19,7 @@ public class Solicitud implements Serializable {
     private List<Prenda> prendas;
     private List<SolicitudDetalle> detalles;
     private Sucursal suc;
+    private int cantidadLavados;
 
     public Solicitud() {
     }
@@ -32,6 +33,14 @@ public class Solicitud implements Serializable {
         this.fechaIngreso = fechaIngreso;
         this.observaciones = observaciones;
         this.fechaEntrega = fechaEntrega;
+    }
+
+    public int getCantidadLavados() {
+        return cantidadLavados;
+    }
+
+    public void setCantidadLavados(int cantidadLavados) {
+        this.cantidadLavados = cantidadLavados;
     }
 
     public boolean getDelivery() {

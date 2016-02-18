@@ -63,7 +63,8 @@ public class MantSolicitudesWizardPaso1 extends javax.swing.JPanel {
         initComponents();
     }
     
-    private void MostrarCliente() {
+    public void MostrarCliente(Cliente c) {
+        cli = c;
         txtcedula.setEnabled(false);
         txtcedula.setText(cli.getCedula());
         txtnombrecli.setText(cli.getNombre());
@@ -71,16 +72,12 @@ public class MantSolicitudesWizardPaso1 extends javax.swing.JPanel {
         txtcelular.setText(cli.getCelular());
         panelUbicacion1.MostrarDatos(cli.getUbicacion());
         panelUbicacion1.SetearEstilos();
-        //btnBuscarCliente.setEnabled(false);
         SetMensajeErrorEvent(Constantes.EMPTY);
     }   
     
     private void ModoDefault() {
         txtcedula.setEnabled(true);
-        btnBuscarCliente.setEnabled(true);
-//        txtnombrecli.setEnabled(false);
-//        txttelefono.setEnabled(false);
-//        txtcelular.setEnabled(false);      
+        btnBuscarCliente.setEnabled(true); 
         txtcedula.setText(Constantes.EMPTY);
         txtnombrecli.setText(Constantes.EMPTY);
         txttelefono.setText(Constantes.EMPTY);
@@ -102,12 +99,12 @@ public class MantSolicitudesWizardPaso1 extends javax.swing.JPanel {
             if ("".equals(txtcedula.getText())) {
                 throw new Exception("Por favor, ingrese la cedula del cliente. ");
             } else {
-                cli = (Cliente) Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().BuscarPersona(txtcedula.getText());
+                cli = Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().BuscarPersona(txtcedula.getText());
             }
             if (cli instanceof Empleado || cli == null) {
                 throw new Exception("El cliente no existe. ");
             } else {
-                MostrarCliente();
+                MostrarCliente((Cliente) cli);
                 btnModificarCli.setEnabled(true);
             }
         } catch (Exception es) {

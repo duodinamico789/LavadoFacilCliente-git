@@ -1,12 +1,9 @@
 package Presentacion.Controls;
-import java.util.LinkedList;
 import Entidades.Objetos.Prenda;
 import Entidades.Objetos.Tintoreria;
 import Entidades.Objetos.PrendaEnvio;
 import java.math.BigDecimal;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class PanelPreciosPrendaEnvio extends javax.swing.JPanel {
 

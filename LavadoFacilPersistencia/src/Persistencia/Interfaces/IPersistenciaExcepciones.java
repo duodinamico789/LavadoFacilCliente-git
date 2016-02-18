@@ -10,6 +10,7 @@ public interface IPersistenciaExcepciones {
     int ModificarExcepcion(String oldNombre, Excepcion excepcion) throws SQLException;
     int BajaExcepcion(Excepcion excepcion) throws SQLException;
     Excepcion BuscarExcepcion(String nomExcepcion)throws SQLException;
+    LinkedList<Excepcion> ListarExcepciones(int IdPda) throws SQLException;
     LinkedList<Excepcion> ListarExcepciones() throws SQLException; 
     
 }

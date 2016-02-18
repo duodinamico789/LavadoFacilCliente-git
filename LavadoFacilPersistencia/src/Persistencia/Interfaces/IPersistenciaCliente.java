@@ -9,7 +9,7 @@ public interface IPersistenciaCliente {
    
     void AltaCliente(Cliente cli)throws SQLException;
     void ModificarCliente(Cliente cli)throws SQLException;
-    void BajaCliente(String cedula) throws SQLException;
+    int BajaCliente(String cedula) throws SQLException;
     Cliente BuscarCliente(String Cedula) throws Exception;
     LinkedList<Cliente> ListarClientesXFechareg() throws SQLException;
     Cliente LoginCliente (String usu, String pass)throws Exception;

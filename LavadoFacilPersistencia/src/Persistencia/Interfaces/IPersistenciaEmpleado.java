@@ -9,7 +9,7 @@ public interface IPersistenciaEmpleado {
     
     void AltaEmpleado(Empleado emp)throws SQLException;
     void ModificarEmpleados(Empleado emp)throws SQLException;
-    void BajaEmpleado(String cedula) throws SQLException;
+    int BajaEmpleado(String cedula) throws SQLException;
     Empleado BuscarEmpleado(String Cedula)throws SQLException;
     LinkedList<Empleado> ListarEmpleados() throws SQLException;
     LinkedList<Empleado> ListarEmpleadosConSucursal() throws SQLException;

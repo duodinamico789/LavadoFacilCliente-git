@@ -45,9 +45,9 @@ public class LogicaTintorerias implements Logica.Interface.ILogicaTintorerias {
     }
     
     @Override
-    public LinkedList<Tintoreria> ListarTintorerias() throws Exception
+    public LinkedList<Tintoreria> ListarTintorerias(int idSuc2) throws Exception
     {
         Persistencia.Interfaces.IPersistenciaTintoreria tinto = Persistencia.Clases.FabricaPersistencia.getInstancia().getIPersistenciaTintorerias();
-        return tinto.ListarTintorerias();
+        return tinto.ListarTintorerias(idSuc2);
     }
 }

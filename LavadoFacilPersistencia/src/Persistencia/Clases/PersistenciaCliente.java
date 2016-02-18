@@ -156,7 +156,8 @@ public class PersistenciaCliente implements IPersistenciaCliente {
     }
 
     @Override
-    public void BajaCliente(String cedula) throws SQLException {
+    public int BajaCliente(String cedula) throws SQLException {
+	int retorno = 0;
         Connection cnn = null;
 
         try {
@@ -174,12 +175,19 @@ public class PersistenciaCliente implements IPersistenciaCliente {
             if (resultado == -1) {
                 throw new Exception("Error al intentar ejecutar la operacion");
             }
+			if(resultado == 2) {
+            	retorno =1;
+            }
+            else if(resultado ==1) {
+            	retorno =2;
+            }
             cnn.commit();
         } catch (Exception e) {
             cnn.rollback();
         } finally {
             cnn.close();
         }
+        return retorno;
     }
 
     @Override

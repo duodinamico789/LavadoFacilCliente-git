@@ -7,7 +7,7 @@ import java.util.LinkedList;
 public interface IPersistenciaSucursales {
     void AltaSucursal(Sucursal suc)throws SQLException;
     void ModificarSucursal(Sucursal suc)throws SQLException;
-    void BajaSucursal(int idSuc) throws SQLException;
+    int BajaSucursal(int idSuc) throws SQLException;
     Sucursal BuscarSucursal(String nombreSuc)throws SQLException;
     LinkedList<Sucursal> ListarSucursales() throws SQLException;
     LinkedList<Sucursal> ListarSucursalesPorTint(int idTint) throws SQLException;

@@ -1,5 +1,7 @@
 package Persistencia.Clases;
 
+import Entidades.Datatypes.PrendaExtended;
+import Entidades.Objetos.Excepcion;
 import Entidades.Objetos.Prenda;
 import Entidades.Objetos.PrendaEnvio;
 import Entidades.Objetos.Tintoreria;
@@ -229,8 +231,6 @@ public class PersistenciaPrendas implements Persistencia.Interfaces.IPersistenci
             cnn.setAutoCommit(false);
 
             CallableStatement cs = cnn.prepareCall("{ call ListarPrendas( ? ) }");
-//            int value = (aplicaTint) ? 1 : 0;
-//            cs.setInt("aplicaTint", value);
             cs.setBoolean("aplicaTint", aplicaTint);
             rs = cs.executeQuery();
 
@@ -289,12 +289,14 @@ public class PersistenciaPrendas implements Persistencia.Interfaces.IPersistenci
     }
     
     @Override
-    public LinkedList<Prenda> ListarPrendasXSol(int idSol) throws SQLException
+    public LinkedList<PrendaExtended> ListarPrendasXSol(int idSol) throws SQLException
     {
         Connection cnn = null;
-        Prenda pre = null;
-        LinkedList<Prenda> lista = new LinkedList<Prenda>();
+        PrendaExtended pre = null;
+        LinkedList<PrendaExtended> lista = new LinkedList<PrendaExtended>();
         ResultSet rs = null;
+        ResultSet rs2 = null;
+
 
         try {
             cnn = Conexion.ConectarMysql("localhost", 3306, "root", "", "lavadero_01");
@@ -305,10 +307,19 @@ public class PersistenciaPrendas implements Persistencia.Interfaces.IPersistenci
             rs = cs.executeQuery();
 
             while (rs.next()) {
-                pre = new Prenda(
-                        rs.getInt("IdPda"),
-                        rs.getString("Tipo"),
-                        rs.getBoolean("AplicaTint"));
+
+                pre = new PrendaExtended();
+                Prenda p = new Prenda();
+                pre.setCantPrendas(rs.getInt("Cantidad"));
+                p.setTipo(rs.getString("Tipo"));
+                p.setIdpda(rs.getInt("IdPda"));
+                p.setTintoreria( rs.getBoolean("AplicaTint"));
+                LinkedList<Excepcion> ex = FabricaPersistencia.getInstancia().getIpersistenciaExcepciones().ListarExcepciones(p.getIdpda());
+                p.setExcepcionesList(ex);
+                pre.setPrenda(p);
+
+
+
                 lista.add(pre);
             }
             cnn.commit();

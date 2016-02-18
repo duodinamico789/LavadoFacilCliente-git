@@ -42,14 +42,6 @@ public class LogicaUbicacion implements Logica.Interface.ILogicaUbicacion{
        Persistencia.Interfaces.IPersistenciaUbicacion ubi = Persistencia.Clases.FabricaPersistencia.getInstancia().getIpersistenciaUbicacion();
        ubi.BajaUbicacion(id);
      }
-     
-    @Override
-     public void BajaRelacion_UbicPerson(int id, String cedula) throws Exception
-     { 
-       Persistencia.Interfaces.IPersistenciaUbicacion ubi = Persistencia.Clases.FabricaPersistencia.getInstancia().getIpersistenciaUbicacion();
-       ubi.BajaRelacion_UbicPerson(id, cedula);
-     }
-     
      @Override
      public void BajaRelacion_ubicsucursales(int idubic, int idsuc) throws Exception
      { 

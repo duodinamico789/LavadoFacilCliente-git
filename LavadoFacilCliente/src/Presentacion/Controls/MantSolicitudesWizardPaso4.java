@@ -14,6 +14,7 @@ import java.util.List;
 
 public class MantSolicitudesWizardPaso4 extends javax.swing.JPanel {
     private Solicitud sol;
+    boolean modifica = false;
     
     //<editor-fold defaultstate="collapsed" desc="ParentFrameSolicAdapter">
     private final List<ParentFrameSolicAdapter> listeners = new ArrayList<>();
@@ -92,17 +93,17 @@ public class MantSolicitudesWizardPaso4 extends javax.swing.JPanel {
             sb.append(valor)
             .append("  Precio: $ ")
             .append(pp)
-            .append("  Excepciones: ");
-            valor = (p.getExcepcionesList() == null || p.getExcepcionesList().size() == 0) 
-                    ? "Ninguna" : ObtenerExcepcionesStr(p.getExcepcionesList());
+            .append("  Excepciones: ")
+            .append(valor = (p.getExcepcionesList() == null || p.getExcepcionesList().isEmpty()) 
+                    ? "Ninguna" : ObtenerExcepcionesStr(p.getExcepcionesList()));          
             sb.append(e);
         }
         
         sb.append(e)
             .append(" - - Empleado:")
             .append(e)
-            .append("  Cedula: ")   
-            .append(sol.getCedulaEmp().getCedula())
+            .append("  Nombre: ")   
+            .append(sol.getCedulaEmp().getNombre())
             .append(e)
             .append("  Sucursal: ")  
             .append(sol.getNomSucursal().getNombreSuc())
@@ -113,13 +114,18 @@ public class MantSolicitudesWizardPaso4 extends javax.swing.JPanel {
             .append(" - - Opciones: ")
                 .append(e);
         
+        BigDecimal bdCantLavados = new BigDecimal(sol.getCantidadLavados());
+        
         
         for(Opcion op : sol.getOpcionesList()) {
             sb.append("  Nom. Opción: ")
             .append(op.getNombre() + ", $ " + op.getPrecio())
             .append(e);
-            precio = precio.add(op.getPrecio());
+            precio = precio.add(op.getPrecio().multiply(bdCantLavados));
         }
+        sb.append("  Cantidad de lavados: ")
+        .append(sol.getCantidadLavados())
+         .append(e);
         
         if(sol.getBrechaHoraria() != null) {
             sb.append(" - - Entrega:")
@@ -206,10 +212,22 @@ public class MantSolicitudesWizardPaso4 extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    public void isModifica(boolean mod)
+    {
+      modifica = mod;
+    }
+
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
         try
         {
+          if(modifica)
+          {
+            //aca se borra las relaciones  
+            Logica.Clases.FabricaLogica.getInstancia().getILogicaSolicitud().ModificarSolicitud(sol);
+          }
+          else{
           Logica.Clases.FabricaLogica.getInstancia().getILogicaSolicitud().AltaSolicitud(sol);
+          }
         }
         catch(Exception ex)
         {

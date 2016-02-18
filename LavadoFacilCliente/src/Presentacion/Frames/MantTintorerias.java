@@ -170,6 +170,9 @@ public class MantTintorerias extends BaseJFrame {
             }
         });
 
+        lblError.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        lblError.setForeground(new java.awt.Color(255, 0, 0));
+
         btnEliminarSuc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Presentacion/Resources/delete-icon24x24.png"))); // NOI18N
         btnEliminarSuc.setEnabled(false);
         btnEliminarSuc.addActionListener(new java.awt.event.ActionListener() {
@@ -185,14 +188,13 @@ public class MantTintorerias extends BaseJFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(datosTint1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jtxtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jbtnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jtxtNombre))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jbtnAlta, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -209,20 +211,17 @@ public class MantTintorerias extends BaseJFrame {
                                     .addComponent(lblsucursal))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                    .addComponent(jtxtTelefono, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
-                                    .addComponent(jcombosucursales, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jtxtTelefono)
+                                    .addComponent(jcombosucursales, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(18, 18, 18)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(btnEliminarSuc, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnAgregarSuc, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(panelUbicacion2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(lblError)
-                                .addGap(131, 131, 131))))
-                    .addComponent(datosTint1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jbtnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnAgregarSuc, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(58, 58, 58)
+                        .addComponent(panelUbicacion2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblError))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -230,20 +229,21 @@ public class MantTintorerias extends BaseJFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
+                        .addGap(75, 75, 75)
+                        .addComponent(panelUbicacion2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jbtnAlta)
-                            .addComponent(jbtnModificar)
-                            .addComponent(jbtnEliminar)
-                            .addComponent(jSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jbtnCancelar))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(83, 83, 83)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel4)
-                                    .addComponent(jtxtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(20, 20, 20)
+                                            .addComponent(jtxtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(75, 75, 75)
+                                        .addComponent(jbtnBuscar)))
+                                .addGap(15, 15, 15)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel5)
                                     .addComponent(jtxtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -252,19 +252,21 @@ public class MantTintorerias extends BaseJFrame {
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(lblsucursal)
                                         .addComponent(jcombosucursales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(btnAgregarSuc, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnEliminarSuc, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(btnAgregarSuc, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(1, 1, 1)
-                                .addComponent(panelUbicacion2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblError, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(63, 63, 63)
-                        .addComponent(jbtnBuscar)))
+                                .addGap(32, 32, 32)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jbtnAlta)
+                                    .addComponent(jbtnModificar)
+                                    .addComponent(jbtnEliminar)
+                                    .addComponent(jSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jbtnCancelar))))
+                        .addGap(22, 22, 22)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnEliminarSuc, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(16, 16, 16)
+                .addComponent(lblError, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(datosTint1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(31, Short.MAX_VALUE))
@@ -280,7 +282,7 @@ public class MantTintorerias extends BaseJFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTabbedPane1)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 755, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -307,13 +309,6 @@ public class MantTintorerias extends BaseJFrame {
         }
     }//GEN-LAST:event_btnEliminarSucActionPerformed
 
-    private Object[] convertirListaCombo(LinkedList<Sucursal> lista) {
-        String[] sucus = new String[lista.size()];
-        for (int i = 0; i < lista.size(); i++) {
-            sucus[i] = lista.get(i).getNombreSuc();
-        }
-        return sucus;
-    }
 
     private void btnAgregarSucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarSucActionPerformed
         if (jcombosucursales.getSelectedIndex() >= 0) {
@@ -349,9 +344,12 @@ public class MantTintorerias extends BaseJFrame {
                         }
                         tint.setNombre(jtxtNombre.getText());
                         tint.setTelefono(jtxtTelefono.getText());
-                        //tint = datosTint1.ObtenerDatos(tint);
                         if (tint != null) {
                             Ubicacion ub = panelUbicacion2.AltaUbicacion();
+                            if(ub == null)
+                            {
+                              throw new Exception("Compruebe datos de ubicacion");
+                            }
                             tint.setUbicacion(ub);
                             tint.setSucursalCercana(listaTabla);
                         }
@@ -394,10 +392,14 @@ public class MantTintorerias extends BaseJFrame {
                             }
                         }
                         Ubicacion ub = panelUbicacion2.ModificarUbicacion();
+                        if(ub == null)
+                        {
+                          throw new Exception("Compruebe datos de ubicacion");
+                        }
                         tint.setUbicacion(ub);
                         tint.setSucursalCercana(listaTabla);
 
-                        listatint = Logica.Clases.FabricaLogica.getInstancia().getILogicaTintoreria().ListarTintorerias();
+                        listatint = Logica.Clases.FabricaLogica.getInstancia().getILogicaTintoreria().ListarTintorerias(0);
                         int totales = 0;
                         for (int i = 0; i < listatint.size(); i++) {
                             Tintoreria ti = listatint.get(i);
@@ -484,8 +486,6 @@ public class MantTintorerias extends BaseJFrame {
                         if (jtxtNombre.getText().isEmpty()) {
                             throw new Exception("Nombre vacio");
                         } else {
-//                            IPersistenciaTintoreria pt = Persistencia.Clases.PersistenciaTintorerias.getInstancia();
-//                            tint = pt.BuscarTintoreria(jtxtNombre.getText());
                             tint = Logica.Clases.FabricaLogica.getInstancia().getILogicaTintoreria()
                                     .BuscarTintoreria(jtxtNombre.getText());
                             if (tint == null) {
@@ -515,6 +515,14 @@ public class MantTintorerias extends BaseJFrame {
     private void jtxtNombreFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jtxtNombreFocusGained
         lblError.setText("");
     }//GEN-LAST:event_jtxtNombreFocusGained
+
+    private Object[] convertirListaCombo(LinkedList<Sucursal> lista) {
+        String[] sucus = new String[lista.size()];
+        for (int i = 0; i < lista.size(); i++) {
+            sucus[i] = lista.get(i).getNombreSuc();
+        }
+        return sucus;
+    }
 
     public void SetearTabla(LinkedList<Sucursal> suc) {
         try {
@@ -591,21 +599,10 @@ public class MantTintorerias extends BaseJFrame {
         jtxtNombre.setEnabled(false);
         jtxtTelefono.setEnabled(true);
         listaTabla = (LinkedList<Sucursal>) tint.getSucursalCercana();
-        if (listaTabla == null) {
-            listaTabla = new LinkedList<Sucursal>();
-        } else {
-            try { //arreglar esto
-                LinkedList<Sucursal> listaAux = new LinkedList<>();
-                for (int m = 0; m < listaTabla.size(); m++) {
-                    Sucursal s = Logica.Clases.FabricaLogica.getInstancia().getILogicaSucursales().BuscarSucursal(listaTabla.get(m).getNombreSuc());
-                    listaAux.add(s);
-                }
-                listaTabla = listaAux;
-                SetearTabla(listaAux);
+         try { SetearTabla(listaTabla);
             } catch (Exception ex) {
                 lblError.setText(ex.getMessage());
             }
-        }
 
         for (int i = 0; i < listaTabla.size(); i++) {
             Sucursal su = listaTabla.get(i);

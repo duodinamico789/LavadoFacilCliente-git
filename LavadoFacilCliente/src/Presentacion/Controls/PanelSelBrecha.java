@@ -31,6 +31,16 @@ public class PanelSelBrecha extends javax.swing.JPanel implements OkPressedListe
         public Calendar getFecha() {
         return fechaDisplay;
     }   
+    public void setdelivery(boolean delivery)
+    {
+        if (delivery == true) {
+            cbDelivery.setSelected(true);
+            cbBrechas.setVisible(true);
+        }else{
+            cbDelivery.setSelected(false);
+            cbBrechas.setVisible(false);
+        }
+    }
     public boolean IsEmpty() {
         return fechaDisplay == null;
     }
@@ -124,9 +134,16 @@ public class PanelSelBrecha extends javax.swing.JPanel implements OkPressedListe
             if(recargarDataSource) {
                 dataSourceBrechas = Logica.Clases.FabricaLogica.getInstancia().getILogicaBrechasHorarias().ListarBrechasHorarias();
             }       
+            int haybrechas = dataSourceBrechas.size();
+            if(getIsDelivery() && haybrechas ==0 )
+            {
+             throw new Exception("NO existen brechas horarias");
+            }
             List<String> array = new ArrayList<>();
             array.add(firstValueBrechasCbo);
             for(BrechaHoraria bh : dataSourceBrechas) {
+                if(bh.getNoDisponible() == false)
+                {
                 List<String> dias = new ArrayList<>();
                 StringTokenizer st = new StringTokenizer(bh.getDiasVigencia(),",", false);
                 while (st.hasMoreTokens()) 
@@ -142,6 +159,7 @@ public class PanelSelBrecha extends javax.swing.JPanel implements OkPressedListe
                   array.add(horarios);
                  }
                 }
+               }
             }
             largo = array.size();
             cbBrechas.setModel(new DefaultComboBoxModel(array.toArray()));

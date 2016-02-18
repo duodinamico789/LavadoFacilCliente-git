@@ -219,6 +219,10 @@ public class MantSucursal extends BaseJFrame {
                     }
                     suc.setTelefono(txttelefono.getText());
                     Ubicacion ub = panelUbicacion1.ModificarUbicacion();
+                    if(ub == null)
+                    {
+                          throw new Exception("Compruebe datos de ubicacion");
+                    }
                     suc.setUbicacion(ub);
 
                     listasuc = Logica.Clases.FabricaLogica.getInstancia().getILogicaSucursales().ListarSucursales();
@@ -255,10 +259,11 @@ public class MantSucursal extends BaseJFrame {
             public void run() {
                 try {
                     MostrarLoading(true);
-                    Ubicacion ub = panelUbicacion1.BuscarUbicacion(suc.getUbicacion().getDireccion());
-                    Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaRelacion_ubicsucursales(ub.getId(), suc.getIdSuc());
-                    Logica.Clases.FabricaLogica.getInstancia().getILogicaSucursales().BajaSucursal(suc.getIdSuc());
-                    Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaUbicacion(ub.getId());
+                    int retorno = Logica.Clases.FabricaLogica.getInstancia().getILogicaSucursales().BajaSucursal(suc.getIdSuc());
+                    if(retorno ==1)
+                    {
+                      Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaUbicacion(suc.getUbicacion().getId());
+                    }
                     lblerror.setText("Baja exitosa");
                     Reinicio();
                 } catch (Exception ex) {
@@ -340,6 +345,10 @@ public class MantSucursal extends BaseJFrame {
                     suc = new Sucursal(txtnombre.getText(), txttelefono.getText());
                     if (suc != null) {
                         Ubicacion ub = panelUbicacion1.AltaUbicacion();
+                        if(ub == null)
+                        {
+                          throw new Exception("Compruebe datos de ubicacion");
+                        }
                         suc.setUbicacion(ub);
                     }
                     Logica.Clases.FabricaLogica.getInstancia().getILogicaSucursales().AltaSucursales(suc);

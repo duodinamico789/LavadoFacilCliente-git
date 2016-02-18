@@ -1,5 +1,6 @@
 package Logica.Interface;
 
+import Entidades.Datatypes.PrendaExtended;
 import Entidades.Objetos.Prenda;
 import Entidades.Objetos.PrendaEnvio;
 import java.util.LinkedList;
@@ -16,6 +17,6 @@ public interface ILogicaPrendas {
      LinkedList<Prenda> ListarPrendas(boolean aplicaTint) throws Exception;
      LinkedList<Prenda> ListarPrendas() throws Exception;
      LinkedList<PrendaEnvio> ListarPrendasEnvio()throws Exception;
-     LinkedList<Prenda> ListarPrendasXSol(int idSol) throws Exception;
+     LinkedList<PrendaExtended> ListarPrendasXSol(int idSol) throws Exception;
      LinkedList<PrendaEnvio> ListarPrendasEnvioXIdPren(int idPren) throws Exception ;
 }

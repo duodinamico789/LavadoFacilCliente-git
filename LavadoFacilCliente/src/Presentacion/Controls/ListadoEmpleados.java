@@ -21,9 +21,9 @@ public class ListadoEmpleados extends javax.swing.JPanel {
          jcomboempleados.setSelectedIndex(0);
          jcombosucursales.setSelectedIndex(0);
          listasuc = Logica.Clases.FabricaLogica.getInstancia().getILogicaSucursales().ListarSucursales();
-         String[] sucus = new String[listasuc.size()];
+         String[] sucus = new String[listasuc.size()+1];
          Sucursal suc = null;
-         sucus[0]= "Todos";
+         sucus[0]= "Todas";
           for(int i=0;i<listasuc.size();i++)
           {
            suc = listasuc.get(i);
@@ -44,7 +44,7 @@ public class ListadoEmpleados extends javax.swing.JPanel {
                 jTableEmpleados.setModel(
                     new javax.swing.table.DefaultTableModel(
                         new Object [][] {
-                           // {null, null, null, null, null, null, null, null}
+                           // {null, null, null, null, null, null, null, null, null}
                         },
                         new String [] {
                             "Cedula", "Nombre", "Telefono","Celular", "Sueldo", "Fecha De Ingreso",
@@ -208,7 +208,6 @@ public class ListadoEmpleados extends javax.swing.JPanel {
             else if(jcomboempleados.getSelectedIndex()!=0&& jcombosucursales.getSelectedIndex()==0)
             {
                String tipo = jcomboempleados.getSelectedItem().toString();
-               listaEmpleados=Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().ListadoEmpleados();
                for(int k=0; k<listaEmpleados.size(); k++)
                {
                  if(listaEmpleados.get(k).getTipoEmpleado().toString().equals(tipo))

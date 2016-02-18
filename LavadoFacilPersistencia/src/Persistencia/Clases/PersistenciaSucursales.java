@@ -32,7 +32,6 @@ public class PersistenciaSucursales implements Persistencia.Interfaces.IPersiste
         try {
             int resultado = -1;
             int resultado2 = -1;
-            int idsuc = -1;
             cnn = Conexion.ConectarMysql("localhost", 3306, "root", "", "lavadero_01");
             cnn.setAutoCommit(false);
 
@@ -112,8 +111,9 @@ public class PersistenciaSucursales implements Persistencia.Interfaces.IPersiste
     }
 
     @Override
-    public void BajaSucursal(int idSuc) throws SQLException {
+    public int BajaSucursal(int idSuc) throws SQLException {
         Connection cnn = null;
+        int retorno =0;
 
         try {
             int resultado = -1;
@@ -128,12 +128,17 @@ public class PersistenciaSucursales implements Persistencia.Interfaces.IPersiste
             if (resultado == -1) {
                 throw new Exception("Error al intentar ejecutar la operacion");
             }
+            if(resultado ==2)
+            {
+               retorno = 1;
+            }
             cnn.commit();
         } catch (Exception e) {
             cnn.rollback();
         } finally {
             cnn.close();
         }
+        return retorno;
     }
 
     @Override
@@ -188,6 +193,7 @@ public class PersistenciaSucursales implements Persistencia.Interfaces.IPersiste
 
             while (rs.next()) {
                 suc = new Sucursal();
+                suc.setIdSuc(rs.getInt("IdSuc"));
                 suc.setNombreSuc(rs.getString("NombreSuc"));
                 suc.setTelefono(rs.getString("Telefono"));
                 Ubicacion u = new Ubicacion();
@@ -218,7 +224,7 @@ public class PersistenciaSucursales implements Persistencia.Interfaces.IPersiste
             cnn = Conexion.ConectarMysql("localhost", 3306, "root", "", "lavadero_01");
             cnn.setAutoCommit(false);
 
-            CallableStatement cs = cnn.prepareCall("{ call ListarSucursalesPorTint() }");
+            CallableStatement cs = cnn.prepareCall("{ call ListarSucursalesPorTint(?) }");
             cs.setInt("IdTint2", idTint);
             rs = cs.executeQuery();
 

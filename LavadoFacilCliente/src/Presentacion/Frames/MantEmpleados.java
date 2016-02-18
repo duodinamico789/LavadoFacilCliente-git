@@ -164,6 +164,9 @@ public class MantEmpleados extends BaseJFrame {
             }
         });
 
+        lblerror.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        lblerror.setForeground(new java.awt.Color(255, 51, 51));
+
         jLabel2.setText("Sucursal:");
 
         jcomboSucursales.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -325,9 +328,11 @@ public class MantEmpleados extends BaseJFrame {
             public void run() {
                 try {
                     MostrarLoading(true);
-                    Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaRelacion_UbicPerson(emp.getUbicacion().getId(), emp.getCedula());
-                    Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().BajaPersona(txtcedula.getText());
+                    int retorno = Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().BajaPersona(txtcedula.getText());
+                    if(retorno ==1)
+                    {
                     Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaUbicacion(emp.getUbicacion().getId());
+                    }
                     reinicio();
                     lblerror.setText("Baja exitosa");
                 } catch (Exception es) {
@@ -370,6 +375,10 @@ public class MantEmpleados extends BaseJFrame {
                             TipoEmpleado.valueOf(comboTipo.getSelectedItem().toString()),suc);
                     if (emp != null) {
                         Ubicacion ub = panelUbicacion1.ModificarUbicacion();
+                        if(ub == null)
+                        {
+                          throw new Exception("Compruebe datos de ubicacion");
+                        }
                         emp.setUbicacion(ub);
                     }
                     listaper = Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().ListadoEmpleados();
@@ -380,7 +389,7 @@ public class MantEmpleados extends BaseJFrame {
                             totales++;
                         }
                     }
-                    Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaRelacion_UbicPerson(ubactual.getId(), emp.getCedula());
+                    //Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaRelacion_UbicPerson(ubactual.getId(), emp.getCedula());
                     if (totales == 0 && !emp.getUbicacion().getDireccion().equals(ubactual.getDireccion())) {
                         Logica.Clases.FabricaLogica.getInstancia().getILogicaUbicacion().BajaUbicacion(ubactual.getId());
                     }
@@ -429,6 +438,10 @@ public class MantEmpleados extends BaseJFrame {
 
                     if (emp != null) {
                         Ubicacion ub = panelUbicacion1.AltaUbicacion();
+                        if(ub == null)
+                        {
+                          throw new Exception("Compruebe datos de ubicacion");
+                        }
                         emp.setUbicacion(ub);
                     }
                     Logica.Clases.FabricaLogica.getInstancia().getILogicaPersonas().AltaPersona(emp);

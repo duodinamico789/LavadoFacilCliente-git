@@ -19,6 +19,7 @@ public class MantBrechasHorarias extends BaseJFrame {
 
     public MantBrechasHorarias() {
         initComponents();
+        MostrarLoading(false);
     }
 
     @SuppressWarnings("unchecked")

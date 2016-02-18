@@ -1,12 +1,16 @@
 package Presentacion.Frames;
 
+import Entidades.Objetos.Empleado;
 import Entidades.Objetos.Solicitud;
+import java.util.LinkedList;
 
 public class MantSolicitudBusqueda extends javax.swing.JFrame {
 
-    public MantSolicitudBusqueda() {
+    Empleado emp;
+    public MantSolicitudBusqueda(Empleado e) {
         initComponents();
         MostrarLoading(false);
+        emp = e;
     }
 
     @SuppressWarnings("unchecked")
@@ -120,7 +124,7 @@ public class MantSolicitudBusqueda extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         pack();
@@ -146,25 +150,55 @@ public class MantSolicitudBusqueda extends javax.swing.JFrame {
         @Override
         public void run() {
             Solicitud s = new Solicitud();
+            LinkedList<Solicitud> listasol = new LinkedList<>();
+            LinkedList<Solicitud> listasolaux = new LinkedList<>();
             try
             {
+                if("".equals(txtTexto.getText())){
+                  throw new Exception("texto vacio");  
+                }
                 if(rbCi.isSelected())
                 {
-                  s = Logica.Clases.FabricaLogica.getInstancia().getILogicaSolicitud().BuscarSolicitudXCli(txtTexto.getText());
+                  listasol = Logica.Clases.FabricaLogica.getInstancia().getILogicaSolicitud().BuscarSolicitudXCli(txtTexto.getText());
+                  for(Solicitud sol : listasol)
+                  {
+                    if("En_Proceso".equals(sol.getEstado().toString()))
+                    {
+                      listasolaux.add(sol);
+                    }
+                  }
+                  if(listasolaux.isEmpty())
+                  {
+                    throw new Exception("No existe ninguna solicitud en proceso para el cliente buscado");
+                  }
                 }
                 else if(rbTi.isSelected())
                 {
                   s = Logica.Clases.FabricaLogica.getInstancia().getILogicaSolicitud().BuscarSolicitudXId(Integer.valueOf(txtTexto.getText()));
+                  if("Finalizada".equals(s.getEstado().toString()))
+                  {
+                    throw new Exception("La soliciitud buscada se encunetra finalizada y no se puede editar");
+                }
                 }
                 else
                 {
                   throw new Exception("Debe seleccionar una opcion");
                 } 
-                if(s != null)
+                if(s == null && listasol.isEmpty())
                 {
                   throw new Exception("No se encontro solicitud buscada, compruebe datos");
                 }
+                else if(s.getId() !=null)
+                {
+                  MantSolicitudesWizard ms = new MantSolicitudesWizard(s,emp);
+                  ms.setVisible(true);
             }
+                else
+                {
+                  ListaSolxCli lsc = new ListaSolxCli(listasolaux,emp);
+                  lsc.setVisible(true);
+                }
+            }           
             catch(Exception ex)
             {
                lblError.setText(ex.getMessage());
@@ -173,6 +207,10 @@ public class MantSolicitudBusqueda extends javax.swing.JFrame {
             }
             };
              queryThread.start();     
+//             if("".equals(lblError.getText()))
+//             {
+//               this.dispose();
+//             }
     }//GEN-LAST:event_btnBuscarSolicitudActionPerformed
     private void MostrarLoading(boolean mostrar) {
         jLabelLoading.setVisible(mostrar);
@@ -180,37 +218,6 @@ public class MantSolicitudBusqueda extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MantSolicitudBusqueda.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MantSolicitudBusqueda.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MantSolicitudBusqueda.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MantSolicitudBusqueda.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MantSolicitudBusqueda().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscarSolicitud;

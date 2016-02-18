@@ -38,10 +38,10 @@ public class LogicaSucursales implements Logica.Interface.ILogicaSucursales{
      }
      
      @Override
-     public void BajaSucursal(int idSuc) throws Exception
+     public int BajaSucursal(int idSuc) throws Exception
      { 
        Persistencia.Interfaces.IPersistenciaSucursales sucu = Persistencia.Clases.FabricaPersistencia.getInstancia().getIPersistenciaSucursal();
-       sucu.BajaSucursal(idSuc);
+       return sucu.BajaSucursal(idSuc);
      }
      
      @Override

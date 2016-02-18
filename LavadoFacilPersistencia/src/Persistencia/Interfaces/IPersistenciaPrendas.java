@@ -1,5 +1,6 @@
 package Persistencia.Interfaces;
 
+import Entidades.Datatypes.PrendaExtended;
 import Entidades.Objetos.Prenda;
 import Entidades.Objetos.PrendaEnvio;
 import java.sql.SQLException;
@@ -15,6 +16,6 @@ public interface IPersistenciaPrendas {
     Prenda BuscarPrenda(String pda)throws SQLException;
     LinkedList<Prenda> ListarPrendas(boolean aplicaTint) throws SQLException;
     LinkedList<PrendaEnvio> ListarPrendasEnvio() throws SQLException;
-    LinkedList<Prenda> ListarPrendasXSol(int idSol) throws SQLException;
+    LinkedList<PrendaExtended> ListarPrendasXSol(int idSol) throws SQLException;
     LinkedList<PrendaEnvio> ListarPrendasEnvioXIdPren(int idPren) throws SQLException;
 }

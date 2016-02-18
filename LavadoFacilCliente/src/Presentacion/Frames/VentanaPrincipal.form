@@ -408,6 +408,30 @@
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnMantExcepcionesMouseClicked"/>
           </Events>
         </Component>
+        <Component class="javax.swing.JButton" name="btnBuscarSol">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Buscar Solicitud de lavado"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscarSolActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnCambioEstadoSol">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Cambio Estado Solicitud"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCambioEstadoSolActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnListadoSol">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Listado Solicitudes"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnListadoSolActionPerformed"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="jPanelInf">

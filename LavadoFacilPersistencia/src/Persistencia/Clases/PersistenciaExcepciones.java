@@ -26,10 +26,6 @@ public class PersistenciaExcepciones implements IPersistenciaExcepciones {
     public int AltaExcepcion(Excepcion excepcion) throws SQLException {
         Connection cnn = null;
         int resultado= -1;
-        
-        //Parametros definidos en bd:
-        //Nombre2 varchar(50), OUT result int
-        
         try 
         {            
             cnn = Conexion.ConectarMysql("localhost", 3306, "root", "", "lavadero_01");
@@ -73,10 +69,6 @@ public class PersistenciaExcepciones implements IPersistenciaExcepciones {
     public int ModificarExcepcion(String oldNombre, Excepcion excepcion) throws SQLException {
         Connection cnn = null;
         int resultado= -1;
-        
-        //Parametros definidos en bd:
-        //Nombre2 varchar(50), NewNombre2 varchar(50), OUT result int
-        
         try 
         {            
             cnn = Conexion.ConectarMysql("localhost", 3306, "root", "", "lavadero_01");
@@ -123,16 +115,12 @@ public class PersistenciaExcepciones implements IPersistenciaExcepciones {
     public int BajaExcepcion(Excepcion excepcion) throws SQLException {
         Connection cnn = null;
         int resultado= -1;
-        
-        //Parametros definidos en bd:
-        //Nombre2 varchar(50), OUT result int
-        
         try 
         {            
             cnn = Conexion.ConectarMysql("localhost", 3306, "root", "", "lavadero_01");
             cnn.setAutoCommit(false);
             CallableStatement cs = cnn.prepareCall("{ call BajaExcepcion( ?, ?)}");
-            cs.setString("Nombre2", excepcion.getNombre());
+            cs.setInt("IdExc2", excepcion.getid());
             cs.registerOutParameter("result", java.sql.Types.INTEGER);
             cs.execute();
             
@@ -150,20 +138,47 @@ public class PersistenciaExcepciones implements IPersistenciaExcepciones {
             System.out.println(ex.toString());
             cnn.rollback();            
             
-            if(ex instanceof StoredProcedureException) {
-                resultado = -1;
-            } else if (ex instanceof SQLException) {
-                resultado = -3;
-            } else {
-                resultado = -2;
+        } 
+        finally 
+        {
+            cnn.close();
+        }        
+        return resultado;
+    }
+
+    @Override
+    public LinkedList<Excepcion> ListarExcepciones(int IdPda) throws SQLException {
+        Connection cnn = null;
+        Excepcion excepcion1 = null;
+        LinkedList<Excepcion> excepcions = null;
+     
+        try {
+            cnn = Conexion.ConectarMysql("localhost", 3306, "root", "", "lavadero_01");
+            cnn.setAutoCommit(false);
+            
+            CallableStatement cs = cnn.prepareCall("{ call ListarexcepcionesPda(?) }");
+            cs.setInt("IdPda", IdPda);
+            ResultSet rs = cs.executeQuery();           
+            excepcions = new LinkedList<>();
+            
+            while(rs.next()) {
+                excepcion1 = new Excepcion(rs.getString("Nombre"));      
+                excepcion1.setid(rs.getInt("IdExc"));
+                excepcions.add(excepcion1);
             }
+            cnn.commit();
+            }
+        catch (Exception ex) 
+        {
+            System.out.println(ex.toString() + " - " + ex.getMessage());
+            cnn.rollback();
         } 
         finally 
         {
             cnn.close();
         } 
         
-        return resultado;
+        return excepcions;
     }
 
     @Override
@@ -171,10 +186,6 @@ public class PersistenciaExcepciones implements IPersistenciaExcepciones {
         Connection cnn = null;
         Excepcion excepcion1 = null;
         LinkedList<Excepcion> excepcions = null;
-        
-        //Parametros definidos en bd:
-        //
-        
         try {            
             // creamos la conexion
             cnn = Conexion.ConectarMysql("localhost", 3306, "root", "", "lavadero_01");

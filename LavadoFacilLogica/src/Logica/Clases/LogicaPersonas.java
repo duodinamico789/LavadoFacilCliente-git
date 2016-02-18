@@ -61,13 +61,17 @@ public class LogicaPersonas implements ILogicaPersonas{
             }
      }
      @Override
-     public void BajaPersona(String cedula) throws Exception
+     public int BajaPersona(String cedula) throws Exception
      {
             Persistencia.Interfaces.IPersistenciaCliente cli = Persistencia.Clases.FabricaPersistencia.getInstancia().getIPersistenciaCliente();
-            cli.BajaCliente(cedula);
+            int resultado = cli.BajaCliente(cedula);
+            if(resultado ==0)
+            {
             
             Persistencia.Interfaces.IPersistenciaEmpleado emp = Persistencia.Clases.FabricaPersistencia.getInstancia().getIPersistenciaEmpleado();
-            emp.BajaEmpleado(cedula);
+            resultado= emp.BajaEmpleado(cedula);
+            }
+            return resultado;
      }
      @Override
      public LinkedList<Cliente> ListarClientesXFechareg()throws Exception

@@ -5,7 +5,10 @@ CREATE TABLE `brechasHorarias` (
  `HoraFin` TIME NOT NULL,
  `DiasVigencia` VARCHAR(55) NOT NULL,
  `LimiteSol` INT(11) NOT NULL,
- `NoDisponible` BIT(1) NOT NULL, PRIMARY KEY (`HoraInicio`,`HoraFin`)
+ `NoDisponible` bit,
+ `cantSol` int(11) NOT NULL,
+ `Eliminado` bit NOT NULL,
+ PRIMARY KEY (`HoraInicio`,`HoraFin`)
 );
 CREATE TABLE `personas` (
  `Cedula` VARCHAR(30) NOT NULL,
@@ -13,7 +16,9 @@ CREATE TABLE `personas` (
  `Nombre` VARCHAR(100) NOT NULL,
  `Telefono` VARCHAR(40) NOT NULL,
  `Celular` VARCHAR(30) NOT NULL,
- `FechaOlvidoPass` DATETIME DEFAULT NULL, PRIMARY KEY (`Cedula`)
+ `FechaOlvidoPass` DATETIME DEFAULT NULL, 
+ `Eliminado` bit NOT NULL,
+ PRIMARY KEY (`Cedula`)
 );
 CREATE TABLE `clientes` (
  `Cedula` VARCHAR(30) NOT NULL,
@@ -23,7 +28,9 @@ CREATE TABLE `clientes` (
 CREATE TABLE `sucursales` (
  `IdSuc` INT(11) NOT NULL AUTO_INCREMENT,
  `NombreSuc` VARCHAR(30) NOT NULL UNIQUE,
- `Telefono` VARCHAR(30) NOT NULL, PRIMARY KEY (`IdSuc`)
+ `Telefono` VARCHAR(30) NOT NULL,
+ `Eliminado` bit NOT NULL,
+  PRIMARY KEY (`IdSuc`)
 );
 CREATE TABLE `empleados` (
  `Cedula` VARCHAR(30) NOT NULL,
@@ -34,7 +41,9 @@ CREATE TABLE `empleados` (
 );
 CREATE TABLE `excepciones` (
  `IdExc` INT(11) NOT NULL AUTO_INCREMENT,
- `Nombre` VARCHAR(50) NOT NULL, PRIMARY KEY (`IdExc`)
+ `Nombre` VARCHAR(50) NOT NULL,
+ `Eliminado`bit NOT NULL,
+  PRIMARY KEY (`IdExc`)
 );
 CREATE TABLE `movimientos` (
  `IdMov` INT(11) NOT NULL AUTO_INCREMENT,
@@ -49,22 +58,26 @@ CREATE TABLE `opciones` (
  `IdOpc` INT(11) NOT NULL AUTO_INCREMENT,
  `NombreOpc` VARCHAR(50) NOT NULL,
  `Precio` DECIMAL(10,2) NOT NULL,
+ `Eliminado` bit NOT NULL,
  PRIMARY KEY (`IdOpc`)
 );
 CREATE TABLE `prendas` (
  `IdPda` INT(11) NOT NULL AUTO_INCREMENT,
  `Tipo` VARCHAR(30) NOT NULL UNIQUE,
- `AplicaTint` BIT(1) NOT NULL, PRIMARY KEY (`IdPda`)
+ `AplicaTint` BIT(1) NOT NULL, 
+ `Eliminado`bit NOT NULL,
+  PRIMARY KEY (`IdPda`)
 );
 CREATE TABLE `solicitudes` (
  `Id` INT(11) NOT NULL AUTO_INCREMENT,
  `FechaIngreso` DATETIME NOT NULL,
  `Observaciones` VARCHAR(180),
  `FechaEntrega` DATETIME,
- `Estado` VARCHAR(50) NOT NULL,
+ `Estado` VARCHAR(15) NOT NULL,
  `CedulaCli` VARCHAR(30) NOT NULL,
  `CedulaEmp` VARCHAR(30) NOT NULL,
  `ConDelivery` bool NOT NULL,
+ `cantidadLavados` int NOT NULL,
  `IdSuc` INT(11) NOT NULL, PRIMARY KEY (`Id`), CONSTRAINT `FK_clientes_solicitudes` FOREIGN KEY (`CedulaCli`) REFERENCES `clientes` (`Cedula`), CONSTRAINT `FK_empleados_solicitudes` FOREIGN KEY (`CedulaEmp`) REFERENCES `empleados` (`Cedula`), CONSTRAINT `FK_suc_solicitudes` FOREIGN KEY (`IdSuc`) REFERENCES `sucursales` (`IdSuc`)
 );
 CREATE TABLE `solicitudDetalles` (
@@ -85,7 +98,8 @@ CREATE TABLE `ubicaciones` (
  `Id` INT NOT NULL AUTO_INCREMENT,
  `Direccion` VARCHAR(100) NOT NULL,
  `Barrio` VARCHAR(30) DEFAULT NULL,
- `Ciudad` VARCHAR(30) DEFAULT NULL, PRIMARY KEY (`Id`)
+ `Ciudad` VARCHAR(30) DEFAULT NULL,
+ `Eliminado`bit NOT NULL, PRIMARY KEY (`Id`)
 );
 CREATE TABLE `relacion_prendaenvio`(
  `Id` INT NOT NULL AUTO_INCREMENT,
@@ -128,14 +142,37 @@ DELIMITER //
 
 /*-- -- -- -- -- -- -- -- -- -- SOLICITUDES -- -- -- -- -- -- -- -- -- -- */
 /*-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- */
+create procedure CambioDeEstadoSol(idSol2 int, estado2 varchar(15), out result int) begin
+declare exit handler for sqlexception
+   begin
+     set result=-1;
+	  rollback;
+	end;
+	set result=0;
+	
+	if not(exists(select id from solicitudes where id = idSol2))then set result=-2;
+	end if;
+	
+	if(result=0) then
+	   start transaction;
+		   update solicitudes set estado = estado2 where id=idSol2;
+		set result=1;	
+		commit;
+	end if;
+end// 
+
 create procedure AltaSolicitudDetalle(idSol2 int, linea2 int, precio2 DECIMAL(10,2), cantidad2 int, descripcion2 varchar(100), idPda2 int, OUT result int)begin
 declare exit handler for SqlException
 	begin
 		SET result = -1;
 		rollback;
 	end;
+	if(idPda2 = 0)then
+	  INSERT INTO SolicitudDetalleS (`IdSol`, `Linea`,`IdPda`, `Precio`, `Cantidad`, `Descripcion`) VALUES (idSol2,linea2, null, precio2, cantidad2, descripcion2);
+	else
 	
 	INSERT INTO SolicitudDetalleS (`IdSol`, `Linea`,`IdPda`, `Precio`, `Cantidad`, `Descripcion`) VALUES (idSol2,linea2, idPda2, precio2, cantidad2, descripcion2);
+	end if; 
 	SET result = 1;
 	commit;
 end//	
@@ -175,19 +212,22 @@ begin
  inner join relacion_solicitudesopciones on relacion_solicitudesopciones.IdSol = solicitudes.Id
  inner join opciones on relacion_solicitudesopciones.IdOpcion = opciones.IdOpc
  inner join solicituddetalles on solicituddetalles.IdSol = solicitudes.Id
- where solicitudes.Id =  idSol
- GROUP by solicitudes.Id;   
+ where solicitudes.Id =  idSol; 
 end//
 
 Create Procedure BuscarSolicitudXCli(CiCli varchar(30))
 begin
- select solicitudes.*, opciones.*, solicituddetalles.*
+ select solicitudes.*, opciones.*, solicituddetalles.*, c.Nombre as 'NombreCliente', e.Nombre as 'NombreEmpleado', 
+ e.Cedula as 'CedulaEmpleado', c.Cedula as 'CedulaCliente'
  from solicitudes 
  inner join relacion_solicitudesopciones on relacion_solicitudesopciones.IdSol = solicitudes.Id
  inner join opciones on relacion_solicitudesopciones.IdOpcion = opciones.IdOpc
  inner join solicituddetalles on solicituddetalles.IdSol = solicitudes.Id
+ inner join personas c on c.Cedula = solicitudes.CedulaCli
+ inner join personas e on e.Cedula = solicitudes.CedulaEmp
  where solicitudes.CedulaCli =  CiCli
- GROUP by solicitudes.Id;  
+ GROUP by solicitudes.Id
+ order by solicitudes.FechaIngreso;  
 end//
 
 create procedure listarBrechasXSol(idSol int)
@@ -200,14 +240,20 @@ end//
 
 create procedure ListarSolicitudes()
 begin
-  select*
-  from solicitudes;
+ select solicitudes.*,  c.Nombre as 'NombreCliente', e.Nombre as 'NombreEmpleado', e.Cedula as 'CedulaEmpleado', c.Cedula as 'CedulaCliente',
+ s.NombreSuc as 'NombreSuc'
+ from solicitudes 
+ inner join personas c on c.Cedula = solicitudes.CedulaCli
+ inner join personas e on e.Cedula = solicitudes.CedulaEmp
+ inner join sucursales s on s.IdSuc = solicitudes.IdSuc
+ GROUP by solicitudes.Id
+ order by solicitudes.FechaIngreso;
 end//	
 
 create procedure AltaSolicitud(fechaIngreso2 datetime, Observaciones2 varchar(180), 
 										 fechaEntrega2 datetime, estado2 varchar(50),
                                cedulaCli2 varchar(30), cedulaEmp2 varchar(30), 
-										 ConDelivery2 bool, idSuc2 varchar(30), 
+										 ConDelivery2 bool, idSuc2 varchar(30), cantidadLavados2 int,
 										 OUT result int,  OUT increment int)
 begin
 	declare exit handler for SqlException
@@ -217,8 +263,8 @@ begin
     end;
    
    start transaction;
-	   INSERT INTO `lavadero_01`.`Solicitudes` (`fechaIngreso`, `Observaciones`, fechaEntrega, estado, cedulaCli, CedulaEmp, ConDelivery, idSuc) 
-			VALUES (fechaIngreso2, Observaciones2, fechaEntrega2, estado2,cedulaCli2, cedulaEmp2, ConDelivery2, idSuc2);
+	   INSERT INTO solicitudes (fechaIngreso, Observaciones, fechaEntrega, estado, cedulaCli, CedulaEmp, ConDelivery, idSuc, cantidadLavados) 
+			VALUES (fechaIngreso2, Observaciones2, fechaEntrega2, estado2,cedulaCli2, cedulaEmp2, ConDelivery2, idSuc2, cantidadLavados2);
    	SET result = 1;
    	set increment = @@IDENTITY;
    commit;
@@ -249,7 +295,7 @@ begin
 end//	
 
 
-create procedure BajaRelacion_solicitudesopciones(IdSol2 int, IdOpcion2 int,OUT result int)
+create procedure BajaRelacion_solicitudesopciones(IdSol2 int,OUT result int)
 begin
    declare exit handler for SqlException
    begin
@@ -257,7 +303,7 @@ begin
       rollback;
    end;
    
-   delete from Relacion_solicitudesopciones where IdSol = IdSol2 and IdOpcion = IdOpcion2;
+   delete from Relacion_solicitudesopciones where IdSol = IdSol2;
    set result = 1;
 end//	
 
@@ -281,11 +327,16 @@ begin
    if(result = 0) then
       insert into Relacion_solicitudesbrechas(IdSol,HoraInicio,HoraFin)
 			values(IdSol2,HoraInicio2,HoraFin2);
+		UPDATE brechashorarias set cantSol = cantSol +1 where HoraInicio = HoraInicio2 and HoraFin = HoraFin2;
+		update brechashorarias set NoDisponible = 0
+	   where HoraInicio = HoraInicio2 
+      and HoraFin = HoraFin2
+      and LimiteSol = cantsol;	
 		set result=1;
 	end if;
 end//	
 
-create procedure BajaRelacion_solicitudbrechas(IdSol2 int, HoraInicio2 time, HoraFin2 time, OUT result int)
+create procedure BajaRelacion_solicitudbrechas(IdSol2 int, out result int)
 begin
    declare exit handler for SqlException
    begin
@@ -293,7 +344,7 @@ begin
       rollback;
    end;
    
-   delete from Relacion_solicitudbrechas where IdSol = IdSol2 and HoraInicio = HoraInicio2 and HoraFin = HoraFin2;
+   delete from Relacion_solicitudesbrechas where IdSol = IdSol2;
    set result = 1;
 end//	
 
@@ -301,8 +352,8 @@ end//
 create procedure ModificarSolicitud(id2 int, fechaIngreso2 datetime, 
 												Observaciones2 varchar(180), fechaEntrega2 datetime, 
 												estado2 varchar(50), cedulaCli2 varchar(30), 
-												CedulaEmp2 varchar(30), ConDelivery2 bit, 
-												NomSucursal2 varchar(30), OUT result int)
+												CedulaEmp2 varchar(30), ConDelivery2 bool, 
+												IdSuc2 int, cantidadLavados2 int, OUT result int)
 begin
    declare exit handler for sqlexception
    begin
@@ -323,7 +374,8 @@ begin
 										  cedulaCli = cedulaCli2,
 										  cedulaEmp = CedulaEmp2,
 										  ConDelivery = ConDelivery2,
-										  NomSucursal = NomSucursal2
+										  IdSuc = IdSuc2,
+										  cantidadLavados = cantidadLavados2
 										  where id=id2;
 		set result=1;	
 		commit;
@@ -422,8 +474,7 @@ begin
 	from personas a
 	left outer join clientes c on c.Cedula = a.Cedula
     left outer join empleados e on e.Cedula = a.Cedula
-    /*where a.Cedula = cedula2 and a.Passw = md5(passw2);*/
-    where a.Cedula = cedula2 and a.Passw = passw2;
+    where a.Cedula = cedula2 and a.Passw = md5(passw2);
 end//
 
 /*-- -- -- -- -- -- -- -- -- -- MOVIMIENTOS -- -- -- -- -- -- -- -- -- -- */
@@ -532,7 +583,8 @@ create procedure BajaTintoreria(idTint2 int, OUT result int) begin
 		rollback;
 	end;
 	
-	DELETE FROM tintorerias WHERE `IdTint` = idTint2;
+	delete from relacion_prendaenvio where IdTint = idTint2;
+	delete from tintorerias WHERE IdTint = idTint2;
 	commit;
 	SET result = 1;
 end//
@@ -553,38 +605,6 @@ create procedure ModificarTintoreria(idTint2 int, Nombre2 varchar(30),
 	SET result = 1;
 end//
 
-/*Create Procedure BuscarTintoreria(Nombre2 varchar(30), OUT result int)
-begin
-   declare exit handler for SqlException
-   begin
-     set result = -1;
-     rollback;
-   end;
-      set @var := 0;
-      set @var:= (select IdTint from tintorerias where tintorerias.Nombre = Nombre2);
-	   if(exists(select IdTint from relacion_tintoreriassucursales where IdTint = @var))then
-			SELECT tintorerias.*, Ubicaciones.*, sucursales.IdSuc, sucursales.NombreSuc
-			from tintorerias
-			inner join relacion_ubictintorerias on relacion_ubictintorerias.IdTint = tintorerias.IdTint
-			inner join ubicaciones on relacion_ubictintorerias.idubic = ubicaciones.Id
-			inner join relacion_tintoreriassucursales on relacion_tintoreriassucursales.IdTint = tintorerias.IdTint	
-			inner join sucursales on relacion_tintoreriassucursales.IdSuc = sucursales.IdSuc
-			where tintorerias.Nombre = Nombre2;
-			commit;
-			set result = 1;
-		end if;
-		if not(exists(select IdTint from relacion_tintoreriassucursales where IdTint = @var))then
-		   SELECT tintorerias.*, Ubicaciones.*
-			from tintorerias
-			inner join relacion_ubictintorerias on relacion_ubictintorerias.IdTint = tintorerias.IdTint
-			inner join ubicaciones on relacion_ubictintorerias.idubic = ubicaciones.id
-			where tintorerias.Nombre = Nombre2;
-			commit;
-		set result = 2;
-		end if;
-end//*/
-
-/*--PRUEBA: ----------------------------------------------------------------------------------------------------------------*/
 Create Procedure BuscarTintoreria2(Nombre2 varchar(30), OUT result int)
 begin
    declare exit handler for SqlException
@@ -601,14 +621,25 @@ begin
 		set result = 1;
 end//
 
-create procedure ListarTintorerias() 
+create procedure ListarTintorerias(idSuc2 int) 
 begin
+   if(idSuc2 !=0)then
    SELECT tintorerias.*, sucursales.IdSuc, sucursales.NombreSuc, Ubicaciones.*
 	from tintorerias
 	inner join relacion_ubictintorerias on relacion_ubictintorerias.IdTint = tintorerias.IdTint
 	inner join ubicaciones on relacion_ubictintorerias.idubic = ubicaciones.id
 	inner join relacion_tintoreriassucursales on relacion_tintoreriassucursales.IdTint = tintorerias.IdTint	
-	inner join sucursales on relacion_tintoreriassucursales.IdSuc = sucursales.IdSuc;
+	inner join sucursales on relacion_tintoreriassucursales.IdSuc = sucursales.IdSuc
+   where sucursales.IdSuc = idSuc2;
+	else
+   SELECT tintorerias.*, sucursales.IdSuc, sucursales.NombreSuc, Ubicaciones.*
+	from tintorerias
+	inner join relacion_ubictintorerias on relacion_ubictintorerias.IdTint = tintorerias.IdTint
+	inner join ubicaciones on relacion_ubictintorerias.idubic = ubicaciones.id
+	inner join relacion_tintoreriassucursales on relacion_tintoreriassucursales.IdTint = tintorerias.IdTint	
+	inner join sucursales on relacion_tintoreriassucursales.IdSuc = sucursales.IdSuc
+	GROUP by tintorerias.IdTint;  
+   end if; 	
 end//
    
 CREATE PROCEDURE Altarelacion_tintoreriassucursales (idTint2 int, idSuc2 int, out result int)
@@ -849,7 +880,7 @@ begin
    
    if(result = 0) then
 	start transaction;
-	insert into prendas(tipo,AplicaTint)values(tipo2,aplicaTint2);
+	insert into prendas(tipo, AplicaTint, Eliminado)values(tipo2, aplicaTint2, 0);
 	set result=1;	
 	commit;
 	end if;					           
@@ -884,10 +915,22 @@ begin
       rollback;
    end;
 	set result = 0;
+   if exists(select IdPda from solicituddetalles where IdPda = IdPda2)then set result=-2;
+   end if;
+
+	  if(result=-2)then
+	  start transaction;
+	  update prendas set eliminado = 1 where IdPda = IdPda2;
+	  set result = 1;
+	  commit;
+	  end if;
 	
 	if(result = 0)then
+	  start transaction;
+	  delete from relacion_prendaenvio where IdPda = IdPda2;
+	  delete from relacion_excepcionesprendas where IdPda = IdPda2;
 	   delete from prendas where IdPda = IdPda2;
-	   set result = 1;
+	  set result =2;
 	   commit;
 	end if;  
 end//	
@@ -924,7 +967,7 @@ begin
    end if;
    
    if(result = 0) then
-	insert into ubicaciones(direccion,barrio, ciudad) values (direccion2,barrio2,ciudad2);
+	insert into ubicaciones(direccion,barrio, ciudad,eliminado) values (direccion2,barrio2,ciudad2,0);
 	set result=1;
 	set increment = @@IDENTITY;	
    end if;
@@ -957,9 +1000,25 @@ begin
       set result = -1;
       rollback;
    end;
+   set result =0;
+   if exists(select IdUbic from relacion_ubicpersona where IdUbic = id2)then set result=-2;
+   end if;
+   if exists(select IdUbic from relacion_ubictintorerias where IdUbic = id2)then set result=-2;
+   end if;
+   if exists(select IdUbic from relacion_ubicsucursales where IdUbic = id2)then set result=-2;
+   end if;
+   if(result=-2)then
+	  start transaction;
+	  update ubicaciones set Eliminado = 1 where id = id2;
+	  set result = 1;
+	  commit;
+	  end if;
+	  if(result =0)then
+	  start transaction;
 	   delete from ubicaciones where id = id2;
+	  set result =2;
 	   commit;
-	   set result = 1;
+	  end if;	     
 end//	
   
 CREATE PROCEDURE ListarUbicaciones()
@@ -996,7 +1055,7 @@ begin
    
    if(result = 0) then
 	   start transaction; 
-		insert into Sucursales(NombreSuc,telefono) values (nombresuc2,telefono2);
+		insert into Sucursales(NombreSuc,telefono,eliminado) values (nombresuc2,telefono2,0);
 		set result=1;
 	   set increment = @@IDENTITY;
 		commit;
@@ -1032,16 +1091,26 @@ begin
       set result = -1;
       rollback;
    end;
-      if (EXISTS(
-			select relacion_tintoreriassucursales.IdSuc 
-			from relacion_tintoreriassucursales 
-			WHERE relacion_tintoreriassucursales.IdSuc = IdSuc2)) then 
-				DELETE from relacion_tintoreriassucursales 
-	     		where relacion_tintoreriassucursales.IdSuc = IdSuc2;
+   set result =0;
+   if exists(select IdSuc from relacion_tintoreriassucursales where IdSuc = IdSuc2)then set result=-2;
+   end if;
+   if exists(select IdSuc from empleados where IdSuc = IdSuc2)then set result=-2;
+   end if;
+   if exists(select IdSuc from movimientos where IdSuc = IdSuc2)then set result=-2;
 	   end if;
-	   DELETE from sucursales where IdSuc = IdSuc2;
+	  if(result=-2)then
+	  start transaction;
+	  update sucursales set eliminado = 1 where IdSuc = IdSuc2;
 	   set result = 1;
 	   commit;	     
+	  end if;
+	  if(result =0)then
+	  start transaction;
+	  delete from relacion_ubicsucursales where IdSuc = IdSuc2;
+	  delete from sucursales where IdSuc = IdSuc2;
+	  set result =2;
+	  commit;
+	  end if;	     
 end//	
   
 CREATE PROCEDURE ListarSucursales()
@@ -1107,10 +1176,10 @@ begin
    if(result = 0) then
       start transaction;
         if(passw2 = 'usuario1')then        
-          insert into personas(Cedula,passw,nombre,telefono,celular)values(cedula2,passw2,nombre2,telefono2,celular2);
+          insert into personas(Cedula,passw,nombre,telefono,celular,eliminado)values(cedula2,passw2,nombre2,telefono2,celular2,0);
         end if;
         if(passw2 != 'usuario1')then        
-          insert into personas(Cedula,passw,nombre,telefono,celular)values(cedula2,md5(passw2),nombre2,telefono2,celular2);
+          insert into personas(Cedula,passw,nombre,telefono,celular,eliminado)values(cedula2,md5(passw2),nombre2,telefono2,celular2,0);
         end if;
           
         insert into empleados(cedula,sueldo,fechaingreso,tipoempleado,IdSuc) 
@@ -1138,10 +1207,10 @@ begin
       start transaction;
 
         if(passw2 = 'usuario1')then        
-          insert into personas(Cedula,passw,nombre,telefono,celular)values(cedula2,passw2,nombre2,telefono2,celular2);
+          insert into personas(Cedula,passw,nombre,telefono,celular,eliminado)values(cedula2,passw2,nombre2,telefono2,celular2,0);
         end if;
         if(passw2 != 'usuario1')then        
-          insert into personas(Cedula,passw,nombre,telefono,celular)values(cedula2,md5(passw2),nombre2,telefono2,celular2);
+          insert into personas(Cedula,passw,nombre,telefono,celular,eliminado)values(cedula2,md5(passw2),nombre2,telefono2,celular2,0);
         end if;
         insert into clientes(cedula, FechaReg) 
 		               values(cedula2, fechaReg2); 
@@ -1205,7 +1274,7 @@ begin
 	end if;
 end//
 
-CREATE PROCEDURE BajaPersona(cedula2 varchar(30), tipo varchar(1), OUT result int)
+CREATE PROCEDURE BajaPersona(cedula2 varchar(30), tipo varchar(5), OUT result int)
 begin
    declare exit handler for SqlException
    begin
@@ -1213,21 +1282,28 @@ begin
       rollback;
    end;
 	set result = 0;
-	start transaction;
 	if(tipo = 'c') then
-	   delete from clientes where cedula = cedula2;
+     if exists(select CedulaCli from solicitudes where CedulaCli = cedula2)then set result=-2;
+     end if;
    end if;
 	if(tipo = 'e')then
-     if (EXISTS(select relacion_empleadosucursales.CedEmpleado from relacion_empleadosucursales WHERE 
-	    relacion_empleadosucursales.CedEmpleado = cedula2)) then DELETE from relacion_empleadosucursales 
-	    where relacion_empleadosucursales.CedEmpleado = cedula2;
+     if exists(select CedulaEmp from solicitudes where CedulaEmp = cedula2)then set result=-2;
 	  end if;
-	delete from empleados where cedula = cedula2;	   
 	end if;
-	delete from personas where cedula = cedula2;
+	  if(result=-2)then
+	  start transaction;
+	  update personas set eliminado = 1 where cedula = cedula2;
 	
 	set result = 1;
 	commit;
+	  end if;
+	  if(result =0)then
+	  start transaction;
+	  delete from relacion_ubicpersona where CedPersona = cedula2;
+	  delete from personas where cedula = cedula2;
+	  set result =2;
+	  commit;
+	  end if;	     
 end//
 
 CREATE PROCEDURE ListarclientesXFechaReg()
@@ -1316,11 +1392,32 @@ begin
       
    if(result = 0) then
       start transaction;
-        insert into brechasHorarias(HoraInicio, HoraFin, DiasVigencia, LimiteSol, NoDisponible)
-		  		values(HoraInicio2,HoraFin2, DiasVigencia2, LimiteSol2, NoDisponible2);
+        insert into brechasHorarias(HoraInicio, HoraFin, DiasVigencia, LimiteSol, NoDisponible, cantSol,Eliminado)
+		  		values(HoraInicio2,HoraFin2, DiasVigencia2, LimiteSol2, NoDisponible2,0,0);
 			set result=1;
 		commit;
 	end if;
+end// 
+
+CREATE PROCEDURE ModificarcantSol(horaInicio2 time, horaFin2 time, OUT result int)
+begin
+   declare exit handler for sqlexception
+   begin
+     set result=-1;
+	  rollback;
+	end;
+	set result=0;
+	
+   if not exists(select * from brechasHorarias where HoraInicio = HoraInicio2 and HoraFin = HoraFin2) then set result=-2;
+	end if;
+	if(result=0 and resta = true)then
+	 start transaction;
+    update brechasHorarias set cantSol = cantSol -1
+	 where HoraInicio = HoraInicio2 
+	 and HoraFin = HoraFin2;		   
+	 set result=1;
+	 commit;	
+	 end if;
 end// 
 
 CREATE PROCEDURE ModificarBrechaHoraria(HoraInicio2 time, HoraFin2 time, DiasVigencia2 varchar(55), NewHoraInicio2 time, NewHoraFin2 time, 
@@ -1333,7 +1430,7 @@ begin
 	end;
 	set result=0;
 	
-   if exists(select * from brechasHorarias where HoraInicio = NewHoraInicio2 and HoraFin = NewHoraFin2) then set result=-2;
+   if not exists(select * from brechasHorarias where HoraInicio = NewHoraInicio2 and HoraFin = NewHoraFin2) then set result=-2;
 	end if;
 	
 	if(result=0)then
@@ -1343,6 +1440,7 @@ begin
 										HoraFin 			= NewHoraFin2,
 										DiasVigencia   = DiasVigencia2,
 										LimiteSol 		= LimiteSol2,
+										cantSol        = 0,
 										NoDisponible 	= NoDisponible2
 			 where HoraInicio = HoraInicio2 
 			 and HoraFin = HoraFin2;
@@ -1361,7 +1459,7 @@ begin
 	set result = 0;
 	
 	if(result = 0)then
-	   delete from brechasHorarias where HoraInicio = HoraInicio2 
+	   update brechasHorarias set Eliminado = 1 where HoraInicio = HoraInicio2 
 			 and HoraFin = HoraFin2;
 	   set result = 1;
 	   commit;
@@ -1397,7 +1495,7 @@ begin
 	end if;
       
    if(result = 0) then
-		INSERT INTO opciones(NombreOpc, Precio) VALUES (Nombre2, Precio2); 
+		INSERT INTO opciones(NombreOpc, Precio, eliminado) VALUES (Nombre2, Precio2,0); 
 		SET result=1;
 	END IF; END// 
 
@@ -1410,19 +1508,13 @@ begin
 	end;
 	set result=0;
 	
-	/*Ya existe ese nombre de opcion. Si dejo esto nunca podre modificar el dato*/
-   /*if exists(select * from opciones where NombreOpc = Nombre2) then set result=-2;
-	end if;*/
-	
 	if(result=0)then
-	   /*start transaction;*/
 UPDATE opciones SET NombreOpc = NewNombre2, Precio = Precio2
 WHERE IdOpc = IdOpc2 ; SET result=1;
-		/*commit;*/ END IF; END//
+		END IF; END//
 		
 CREATE PROCEDURE BajaOpcion(IdOpc2 INT, OUT result INT) BEGIN DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN SET result = -1; ROLLBACK; END;
-DELETE
-FROM opciones
+update opciones set Eliminado = 1
 WHERE IdOpc = IdOpc2; SET result = 1; END//
 
 CREATE PROCEDURE BuscarOpcion(IdOpc2 int) BEGIN
@@ -1438,6 +1530,36 @@ FROM opciones; END//
 /*-- -- -- -- -- -- -- -- -- -- EXCEPCIONES -- -- -- -- -- -- -- -- -- -- */
 /*-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- */
 
+CREATE PROCEDURE AltaRelacion_ExcepcionesPrendas(IdPda2 int, IdExc2 int, OUT result INT)
+begin
+   declare exit handler for sqlexception
+   begin 
+      set result = -1;
+      rollback;
+   end;
+	set result=0;
+   
+   if(exists(select CedPersona, idubic from Relacion_ExcepcionesPrendas where IdPda = IdPda2 and IdExc = IdExc2))then set result=-2;
+   end if;
+   
+   if(result = 0) then
+		insert into Relacion_ExcepcionesPrendas(IdPda,IdExc)values(IdPda2,IdExc2);
+		set result=1;
+	end if;
+end// 
+
+CREATE PROCEDURE BajaRelacion_ExcepcionesPrendas(IdPda2 int, IdExc2 int, OUT result INT)
+begin
+   declare exit handler for SqlException
+   begin
+      set result = -1;
+      rollback;
+   end;
+   
+   delete from Relacion_ExcepcionesPrendas where IdPda = IdPda2 and IdExc = IdExc2;
+   set result = 1;
+end//	
+
 CREATE PROCEDURE AltaExcepcion(Nombre2 varchar(50), out result int)
 begin
    declare exit handler for sqlexception
@@ -1452,7 +1574,7 @@ begin
       
    if(result = 0) then
       start transaction;
-		insert into excepciones(Nombre) values(Nombre2);
+		insert into excepciones(Nombre,Eliminado) values(Nombre2,0);
 		set result=1;
 		commit;
 	end if;		           
@@ -1467,10 +1589,6 @@ begin
 	end;
 	set result=0;
 	
-	/*Ya existe ese nombre de opcion. Si dejo esto nunca podre modificar el dato*/
-   /*if exists(select * from excepciones where Nombre = NewNombre2) then set result=-2;
-	end if;*/
-	
 	if(result=0)then
 	   start transaction;
 		   update excepciones set Nombre = NewNombre2 where Nombre = Nombre2;
@@ -1481,7 +1599,7 @@ begin
 	commit;
 end// 
 
-CREATE PROCEDURE BajaExcepcion(Nombre2 varchar(50), out result int)
+CREATE PROCEDURE BajaExcepcion(IdExc2 int, out result int)
 begin
    declare exit handler for SqlException
    begin
@@ -1490,11 +1608,20 @@ begin
    end;
 	set result = 0;
 	
-	if(result = 0)then
-	   delete from excepciones where Nombre = Nombre2;
+   if exists(select IdExc from relacion_excepcionesprendas where IdExc = IdExc2)then set result=-2;
+   end if;
+   if(result=-2)then
+	  start transaction;
+	  update excepciones set Eliminado = 1 where IdExc = IdExc2;
 	   set result = 1;
 	   commit;
 	end if;  
+	  if(result =0)then
+	  start transaction;
+	  delete from excepciones where IdExc = IdExc2;
+	  set result =2;
+	  commit;
+	  end if;	     
 end//	
 
 
@@ -1503,23 +1630,30 @@ begin
    select * from excepciones where Nombre = Nombre2;
 end//
 
+CREATE PROCEDURE ListarexcepcionesPda(IdPda int)
+begin
+   select excepciones.* 
+	from excepciones 
+	inner join relacion_excepcionesprendas on relacion_excepcionesprendas.IdExc = excepciones.IdExc
+	WHERE relacion_excepcionesprendas.IdPda = IdPda ;
+end//
+
 CREATE PROCEDURE Listarexcepciones()
 begin
-   select * from excepciones;
+   select excepciones.* 
+	from excepciones;
 end//
 
 /*-- -- -- -- -- -- -- -- -- -- INSERTS -- -- -- -- -- -- -- -- -- -- */
 /*-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- */
-/*PRENDA VACIA, DEJARLA ASI COMO ESTA*/
-INSERT INTO prendas(Tipo,AplicaTint) VALUES ('',0); 
-INSERT INTO prendas(Tipo, AplicaTint) values ('AcolchadoPlumas', 1);
-INSERT INTO prendas(Tipo, AplicaTint) values ('AcolchadoWata', 1);
-INSERT INTO prendas(Tipo, AplicaTint) values ('Frazada', 1);
-INSERT INTO prendas(Tipo, AplicaTint) values ('Gabanes', 1);
-INSERT INTO prendas(Tipo, AplicaTint) values ('Gabardinas', 1);
-INSERT INTO prendas(Tipo, AplicaTint) values ('PantalonVestir', 1);
-INSERT INTO prendas(Tipo, AplicaTint) values ('PantalonPana', 1);
-INSERT INTO prendas(Tipo, AplicaTint) values ('Saco', 1);
-INSERT INTO prendas(Tipo, AplicaTint) values ('Traje', 1);
-INSERT INTO prendas(Tipo, AplicaTint) values ('Tapado', 1);
-
+DELIMITER ;
+INSERT INTO prendas(Tipo, AplicaTint, Eliminado) values ('AcolchadoPlumas', 1, 0);
+INSERT INTO prendas(Tipo, AplicaTint, Eliminado) values ('AcolchadoWata', 1, 0);
+INSERT INTO prendas(Tipo, AplicaTint, Eliminado) values ('Frazada', 1, 0);
+INSERT INTO prendas(Tipo, AplicaTint, Eliminado) values ('Gabanes', 1, 0);
+INSERT INTO prendas(Tipo, AplicaTint, Eliminado) values ('Gabardinas', 1, 0);
+INSERT INTO prendas(Tipo, AplicaTint, Eliminado) values ('PantalonVestir', 1, 0);
+INSERT INTO prendas(Tipo, AplicaTint, Eliminado) values ('PantalonPana', 1, 0);
+INSERT INTO prendas(Tipo, AplicaTint, Eliminado) values ('Saco', 1, 0);
+INSERT INTO prendas(Tipo, AplicaTint, Eliminado) values ('Traje', 1, 0);
+INSERT INTO prendas(Tipo, AplicaTint, Eliminado) values ('Tapado', 1, 0);

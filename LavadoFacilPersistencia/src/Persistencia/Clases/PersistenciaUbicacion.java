@@ -83,33 +83,6 @@ public class PersistenciaUbicacion implements Persistencia.Interfaces.IPersisten
             cnn.close();
         }
     }
-    
-    @Override
-    public void BajaRelacion_UbicPerson(int id, String cedula) throws SQLException {
-        Connection cnn = null;
-
-        try {
-            int resultado = -1;
-            cnn = Conexion.ConectarMysql("localhost", 3306, "root", "", "lavadero_01");
-            cnn.setAutoCommit(false);
-
-            CallableStatement cs = cnn.prepareCall("{ call BajaRelacion_UbicPersona( ?, ?, ? ) }");
-            cs.setString("CedPersona2", cedula);
-            cs.setInt("idubic2", id);
-            cs.registerOutParameter("result", java.sql.Types.INTEGER);
-            cs.execute();
-            resultado = cs.getInt("result");
-
-            if (resultado == -1) {
-                throw new Exception("Error al intentar ejecutar la operacion");
-            }
-            cnn.commit();
-        } catch (Exception e) {
-            cnn.rollback();
-        } finally {
-            cnn.close();
-        }
-    }
         
     @Override
     public void BajaRelacion_ubicsucursales(int idubic, int idsuc) throws SQLException {

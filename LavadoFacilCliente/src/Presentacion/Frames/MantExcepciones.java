@@ -389,9 +389,6 @@ public class MantExcepciones extends BaseJFrame {
                     TraerDatosYRecargarTabla();
                     lblError.setText(Constantes.excepcion_ExitoBaja);
                     break;
-                case -1:
-                case -2:
-                case -3:
                 default:
                     lblError.setText(Constantes.excepcion_ErrorBaja_m1);
                     break;

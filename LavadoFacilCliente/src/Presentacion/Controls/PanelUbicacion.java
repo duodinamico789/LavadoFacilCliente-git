@@ -2,6 +2,7 @@
 package Presentacion.Controls;
 import Entidades.Objetos.Ubicacion;
 import java.awt.Color;
+import javax.swing.JOptionPane;
 public class PanelUbicacion extends javax.swing.JPanel {
     private Ubicacion ubic;
     public PanelUbicacion() {
@@ -12,7 +13,6 @@ public class PanelUbicacion extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblError = new javax.swing.JLabel();
         lblTitulo = new javax.swing.JLabel();
         jPanelCont = new javax.swing.JPanel();
         lbldireccion = new javax.swing.JLabel();
@@ -63,7 +63,7 @@ public class PanelUbicacion extends javax.swing.JPanel {
                     .addGroup(jPanelContLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(txtCiudad, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
                         .addComponent(txtBarrio, javax.swing.GroupLayout.Alignment.LEADING)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(160, Short.MAX_VALUE))
         );
         jPanelContLayout.setVerticalGroup(
             jPanelContLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -87,10 +87,6 @@ public class PanelUbicacion extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblError)
-                .addContainerGap(289, Short.MAX_VALUE))
             .addComponent(jPanelCont, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(lblTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -101,9 +97,7 @@ public class PanelUbicacion extends javax.swing.JPanel {
                 .addComponent(lblTitulo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanelCont, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblError)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -122,6 +116,7 @@ public class PanelUbicacion extends javax.swing.JPanel {
        }
        catch(Exception ex)
        {
+         JOptionPane.showMessageDialog(null, ex.getMessage());
        
        }
     }//GEN-LAST:event_txtDireccionFocusLost
@@ -134,7 +129,6 @@ public class PanelUbicacion extends javax.swing.JPanel {
      txtBarrio.setEnabled(false);
      txtCiudad.setEnabled(false);
      txtDireccion.setEnabled(false);
-     lblError.setText("");
     }
     
     public void HabilitarTextboxs(boolean habilitar)
@@ -159,12 +153,12 @@ public class PanelUbicacion extends javax.swing.JPanel {
     {
        try
        {
+         ubic = new Ubicacion();  
          if("".equals(txtDireccion.getText())|| "".equals(txtBarrio.getText())|| "".equals(txtCiudad.getText()))
          {
            throw new Exception("Los campos de ubicacion son obligatorios");
          }
          
-         ubic = new Ubicacion();
          ubic.setDireccion(txtDireccion.getText());
          ubic.setBarrio(txtBarrio.getText());
          ubic.setCiudad(txtCiudad.getText());
@@ -173,7 +167,8 @@ public class PanelUbicacion extends javax.swing.JPanel {
        }
        catch(Exception es) 
        {
-            lblError.setText(es.getMessage());
+           ubic =null;
+           JOptionPane.showMessageDialog(null, es.getMessage());
        }
        return ubic;
     }
@@ -201,7 +196,7 @@ public class PanelUbicacion extends javax.swing.JPanel {
       }
       catch(Exception ex)
       {
-       lblError.setText(ex.getMessage());
+       JOptionPane.showMessageDialog(null, ex.getMessage());
       }
       return ubic;
     }
@@ -236,7 +231,6 @@ public class PanelUbicacion extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanelCont;
-    private javax.swing.JLabel lblError;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel lblbarrio;
     private javax.swing.JLabel lblciudad;

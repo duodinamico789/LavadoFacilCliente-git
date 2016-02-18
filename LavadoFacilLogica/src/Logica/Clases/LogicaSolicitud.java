@@ -1,4 +1,5 @@
 package Logica.Clases;
+import Entidades.Enumeraciones;
 import Entidades.Objetos.Solicitud;
 import Entidades.Objetos.Ubicacion;
 import java.util.LinkedList;
@@ -36,7 +37,7 @@ public class LogicaSolicitud implements Logica.Interface.ILogicaSolicitud{
      }
      
      @Override
-     public LinkedList<Solicitud> ListarUbicaciones()throws Exception
+     public LinkedList<Solicitud> ListarSolicitudes()throws Exception
      {
        Persistencia.Interfaces.IPersistenciaSolicitud sol = Persistencia.Clases.FabricaPersistencia.getInstancia().getIpersistenciaSolicitud();
        return sol.ListarSolicitud();
@@ -50,10 +51,17 @@ public class LogicaSolicitud implements Logica.Interface.ILogicaSolicitud{
      }
      
      @Override
-     public Solicitud BuscarSolicitudXCli(String ciCli)throws Exception 
+     public  LinkedList<Solicitud> BuscarSolicitudXCli(String ciCli)throws Exception 
      {
        Persistencia.Interfaces.IPersistenciaSolicitud sol = Persistencia.Clases.FabricaPersistencia.getInstancia().getIpersistenciaSolicitud();
        return sol.BuscarSolicitudXCli(ciCli);
+     }
+     
+     @Override
+     public void CambiarEstadoSol(int idSol, Enumeraciones.EstadosSolicitud estado)throws Exception 
+     {
+       Persistencia.Interfaces.IPersistenciaSolicitud sol = Persistencia.Clases.FabricaPersistencia.getInstancia().getIpersistenciaSolicitud();
+       sol.CambiarEstadoSol(idSol, estado);
      }
      
      

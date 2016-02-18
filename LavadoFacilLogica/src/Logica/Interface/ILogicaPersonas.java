@@ -9,7 +9,7 @@ public interface ILogicaPersonas {
     void AltaPersona(Persona per)throws Exception;
     Persona BuscarPersona(String ced) throws Exception;
     void ModificarPersona(Persona per) throws Exception;
-    void BajaPersona(String ced) throws Exception;
+    int BajaPersona(String ced) throws Exception;
     LinkedList<Cliente> ListarClientesXFechareg()throws Exception;
     LinkedList<Cliente> ListarClientesXfechaUltimaEntrada()throws Exception;
     LinkedList<Empleado> ListadoEmpleados()throws Exception;

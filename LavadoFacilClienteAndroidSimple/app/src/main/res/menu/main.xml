@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="android.duodinamico.actividades.MainActivity">
+
+    <group android:id="@+id/action_previous_group">
+        <item android:id="@+id/action_before"
+            android:icon="@drawable/ic_previous_step_button"
+            app:showAsAction="withText|ifRoom"
+            android:title="@string/action_bar_button_anterior"/>
+    </group>
+    <group android:id="@+id/action_next_group">
+        <item android:id="@+id/action_next"
+            android:icon="@drawable/ic_next_step_button"
+            app:showAsAction="withText|ifRoom"
+            android:title="@string/action_bar_button_siguiente"/>
+    </group>
+</menu>

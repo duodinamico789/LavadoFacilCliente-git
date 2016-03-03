@@ -1,0 +1,347 @@
+Index: app/src/main/res/layout/activity_login.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_login.xml	(revision )
++++ app/src/main/res/layout/activity_login.xml	(revision )
+@@ -9,26 +9,6 @@
+     tools:context=".LoginActivity"
+     android:background="@drawable/backgshape_activity_login">
+ 
+-    <RelativeLayout
+-        android:layout_width="fill_parent"
+-        android:layout_height="60dp"
+-        android:layout_alignParentTop="true"
+-        android:layout_alignParentLeft="true"
+-        android:layout_alignParentStart="true"
+-        android:id="@+id/rlProgressBar">
+-
+-        <ProgressBar
+-            style="?android:attr/progressBarStyleSmall"
+-            android:layout_width="@dimen/abc_action_bar_progress_bar_size"
+-            android:layout_height="match_parent"
+-            android:id="@+id/progressBar"
+-            android:indeterminate="false"
+-            android:layout_alignParentTop="true"
+-            android:layout_alignParentRight="true"
+-            android:layout_alignParentEnd="true"
+-            android:visibility="invisible" />
+-    </RelativeLayout>
+-
+     <ScrollView
+         android:layout_width="500dp"
+         android:layout_height="wrap_content"
+Index: app/src/main/java/android/duodinamico/asynctasks/LoginClienteAT.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/android/duodinamico/asynctasks/LoginClienteAT.java	(revision )
++++ app/src/main/java/android/duodinamico/asynctasks/LoginClienteAT.java	(revision )
+@@ -1,99 +0,0 @@
+-package android.duodinamico.asynctasks;
+-
+-import android.duodinamico.actividades.LoginActivity;
+-import android.duodinamico.lavadofacilclienteandroid.R;
+-import android.duodinamico.servicios.WebServicesFabrica;
+-import android.duodinamico.utils.SessionUsuarioUtils;
+-import android.duodinamico.utils.Utils;
+-import android.os.AsyncTask;
+-import android.view.View;
+-import android.widget.EditText;
+-import android.widget.ProgressBar;
+-
+-import Entidades.Objetos.Cliente;
+-import Entidades.Objetos.Empleado;
+-import Entidades.Objetos.Persona;
+-
+-public class LoginClienteAT extends AsyncTask<String, Void, Void> {
+-    LoginActivity activity;
+-    ProgressBar progressBar;
+-    EditText txtCedula;
+-    EditText txtPassw;
+-    Exception exception;
+-    Persona p;
+-
+-    public LoginClienteAT(LoginActivity activity, ProgressBar progressBar,
+-                          EditText txtCedula, EditText txtPassw) {
+-        this.activity = activity;
+-        this.progressBar = progressBar;
+-        this.txtCedula = txtCedula;
+-        this.txtPassw = txtPassw;
+-        exception = null;
+-    }
+-
+-    @Override
+-    protected void onPreExecute() {
+-        //Preparo progress bar
+-        progressBar.setVisibility(View.VISIBLE);
+-        progressBar.setIndeterminate(true);
+-        super.onPreExecute();
+-    }
+-
+-    @Override
+-    protected Void doInBackground(String... strings) {
+-        try {
+-            if (ValidarLogin()) {
+-                String cedula = txtCedula.getText().toString();
+-                String passw = txtPassw.getText().toString();
+-
+-                //Cualquier excepcion sera arrojada desde persistencia
+-                p = WebServicesFabrica.getInstance().getWebServices().BuscarPersona(cedula);
+-
+-                if(p instanceof Empleado) {
+-                    throw new Exception(String.valueOf(R.string.error_user_or_password_invalid));
+-                } else {
+-                    p = WebServicesFabrica.getInstance().getWebServices().LoginCliente(cedula,passw);
+-
+-                    //Redirijo a home si coinciden passwords
+-                    if (p == null || !p.getPassw().equals(passw)) {
+-                        throw new Exception(activity.getString(
+-                                R.string.error_user_or_password_invalid));
+-                    }
+-                }
+-            }
+-        } catch (Exception e) {
+-            exception = e;
+-        }
+-        return null;
+-    }
+-
+-    private boolean ValidarLogin() {
+-        //Valida que no haya campos vacíos
+-        boolean valido = true;
+-
+-        if(txtCedula.getText().toString().trim().length() == 0) {
+-            valido = false;
+-            Utils.MostrarMensaje(activity,
+-                    activity.getString(R.string.alert_dialog_error_title),
+-                    activity.getString(R.string.error_insert_user));
+-        } else if (txtPassw.getText().toString().trim().length() == 0) {
+-            valido = false;
+-            Utils.MostrarMensaje(activity,
+-                    activity.getString(R.string.alert_dialog_error_title),
+-                    activity.getString(R.string.error_insert_password));
+-        }
+-
+-        return valido;
+-    }
+-
+-    @Override
+-    protected void onPostExecute(Void aVoid) {
+-        progressBar.setVisibility(View.GONE);
+-        progressBar = null;
+-        if(exception == null) {
+-            SessionUsuarioUtils.getInstance(activity.getApplicationContext())
+-                    .createLoginSession((Cliente) p);
+-            activity.RedirigirMainMenu();
+-        }
+-    }
+-}
+Index: app/src/main/java/android/duodinamico/actividades/LoginActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/android/duodinamico/actividades/LoginActivity.java	(revision )
++++ app/src/main/java/android/duodinamico/actividades/LoginActivity.java	(revision )
+@@ -1,7 +1,6 @@
+ package android.duodinamico.actividades;
+ 
+ import android.content.Intent;
+-import android.duodinamico.asynctasks.LoginClienteAT;
+ import android.duodinamico.lavadofacilclienteandroid.R;
+ import android.duodinamico.servicios.WebServicesFabrica;
+ import android.duodinamico.utils.SessionUsuarioUtils;
+@@ -14,8 +13,6 @@
+ import android.view.View;
+ import android.widget.Button;
+ import android.widget.EditText;
+-import android.widget.ProgressBar;
+-
+ import Entidades.Objetos.Cliente;
+ import Entidades.Objetos.Empleado;
+ import Entidades.Objetos.Persona;
+@@ -26,8 +23,6 @@
+     EditText txtPassw;
+     Button btnLoguearse;
+     Button btnRegistrar;
+-    ProgressBar progressBar;
+-    private LoginClienteAT tarea;
+ 
+     //region Eventos
+     @Override
+@@ -45,7 +40,30 @@
+     //Evento creado en CargarVariables()
+     private void btnLoguearse_Click(View v) {
+         try {
+-            tarea.execute();
++            if (ValidarLogin()) {
++                String cedula = txtCedula.getText().toString();
++                String passw = txtPassw.getText().toString();
++
++                //Cualquier excepcion sera arrojada desde persistencia
++                Persona p = WebServicesFabrica.getInstance().getWebServices().BuscarPersona(cedula);
++
++                if(p instanceof Empleado) {
++                    throw new Exception(String.valueOf(R.string.error_user_or_password_invalid));
++                } else {
++                    p = WebServicesFabrica.getInstance().getWebServices().LoginCliente(cedula,passw);
++
++                    //Redirijo a home si coinciden passwords
++                    if(p != null && p.getPassw().equals(passw)) {
++                        SessionUsuarioUtils.getInstance(LoginActivity.this.getApplicationContext())
++                                .createLoginSession((Cliente) p);
++                        RedirigirMainMenu();
++                    }
++                    else {
++                        throw new Exception(getString(
++                                R.string.error_user_or_password_invalid));
++                    }
++                }
++            }
+         } catch(Exception ex) { Utils.MostrarMensajeException(this, ex); }
+     }
+ 
+@@ -84,8 +102,6 @@
+         txtPassw = (EditText) findViewById(R.id.txtPassw);
+         btnLoguearse = (Button) findViewById(R.id.btnLoguearse);
+         btnRegistrar = (Button) findViewById(R.id.btnRegistrar);
+-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+-        tarea = new LoginClienteAT(this, progressBar, txtCedula, txtPassw);
+ 
+         //Eventos botones
+         btnLoguearse.setOnClickListener(new View.OnClickListener() {
+@@ -98,7 +114,7 @@
+         });
+     }
+ 
+-    /*private boolean ValidarLogin() {
++    private boolean ValidarLogin() {
+         //Valida que no haya campos vacíos
+         boolean valido = true;
+ 
+@@ -115,9 +131,9 @@
+         }
+ 
+         return valido;
+-    }*/
++    }
+ 
+-    public void RedirigirMainMenu() {
++    private void RedirigirMainMenu() {
+         try {
+ //            //Agregamos el usuario logueado en formato Json y commiteamos
+ //            Common.UserUtils.LoadUsuarioLogueado(usuario, getApplicationContext());
+Index: app/build/generated/source/r/debug/android/duodinamico/lavadofacilclienteandroid/R.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build/generated/source/r/debug/android/duodinamico/lavadofacilclienteandroid/R.java	(revision )
++++ app/build/generated/source/r/debug/android/duodinamico/lavadofacilclienteandroid/R.java	(revision )
+@@ -1528,27 +1528,27 @@
+         public static final int action_bar_spinner=0x7f090001;
+         public static final int action_bar_subtitle=0x7f090024;
+         public static final int action_bar_title=0x7f090023;
+-        public static final int action_before=0x7f090060;
+-        public static final int action_before_group=0x7f09005f;
++        public static final int action_before=0x7f09005e;
++        public static final int action_before_group=0x7f09005d;
+         public static final int action_context_bar=0x7f090041;
+         public static final int action_menu_divider=0x7f090002;
+         public static final int action_menu_presenter=0x7f090003;
+         public static final int action_mode_bar=0x7f09003d;
+         public static final int action_mode_bar_stub=0x7f09003c;
+         public static final int action_mode_close_button=0x7f090025;
+-        public static final int action_next=0x7f090062;
+-        public static final int action_next_group=0x7f090061;
+-        public static final int action_settings=0x7f090063;
++        public static final int action_next=0x7f090060;
++        public static final int action_next_group=0x7f09005f;
++        public static final int action_settings=0x7f090061;
+         public static final int activity_chooser_view_content=0x7f090026;
+         public static final int alertTitle=0x7f090030;
+         public static final int always=0x7f090016;
+         public static final int beginning=0x7f090013;
+-        public static final int btnLoguearse=0x7f090057;
+-        public static final int btnRegistrar=0x7f090058;
++        public static final int btnLoguearse=0x7f090055;
++        public static final int btnRegistrar=0x7f090056;
+         public static final int buttonPanel=0x7f090036;
+         public static final int checkbox=0x7f090038;
+         public static final int collapseActionView=0x7f090017;
+-        public static final int container=0x7f09005a;
++        public static final int container=0x7f090058;
+         public static final int contentPanel=0x7f090031;
+         public static final int custom=0x7f090035;
+         public static final int customPanel=0x7f090034;
+@@ -1556,7 +1556,7 @@
+         public static final int default_activity_button=0x7f090029;
+         public static final int dialog=0x7f09001b;
+         public static final int disableHome=0x7f09000c;
+-        public static final int drawer_layout=0x7f090059;
++        public static final int drawer_layout=0x7f090057;
+         public static final int dropdown=0x7f09001c;
+         public static final int edit_query=0x7f090042;
+         public static final int end=0x7f090014;
+@@ -1567,22 +1567,20 @@
+         public static final int icon=0x7f09002b;
+         public static final int ifRoom=0x7f090018;
+         public static final int image=0x7f090028;
+-        public static final int imgLogo=0x7f090054;
+-        public static final int linLogin=0x7f090052;
++        public static final int imgLogo=0x7f090052;
++        public static final int linLogin=0x7f090050;
+         public static final int listMode=0x7f090009;
+         public static final int list_item=0x7f09002a;
+         public static final int middle=0x7f090015;
+         public static final int multiply=0x7f09001e;
+-        public static final int navigation_drawer=0x7f09005b;
++        public static final int navigation_drawer=0x7f090059;
+         public static final int never=0x7f090019;
+         public static final int none=0x7f09000e;
+         public static final int normal=0x7f09000a;
+         public static final int parentPanel=0x7f09002d;
+-        public static final int progressBar=0x7f090050;
+         public static final int progress_circular=0x7f090005;
+         public static final int progress_horizontal=0x7f090006;
+         public static final int radio=0x7f09003a;
+-        public static final int rlProgressBar=0x7f09004f;
+         public static final int screen=0x7f09001f;
+         public static final int scrollView=0x7f090032;
+         public static final int search_badge=0x7f090044;
+@@ -1595,7 +1593,7 @@
+         public static final int search_plate=0x7f090048;
+         public static final int search_src_text=0x7f090049;
+         public static final int search_voice_btn=0x7f09004d;
+-        public static final int section_label=0x7f09005e;
++        public static final int section_label=0x7f09005c;
+         public static final int select_dialog_listview=0x7f09004e;
+         public static final int shortcut=0x7f090039;
+         public static final int showCustom=0x7f09000f;
+@@ -1606,17 +1604,17 @@
+         public static final int src_in=0x7f090021;
+         public static final int src_over=0x7f090022;
+         public static final int submit_area=0x7f09004b;
+-        public static final int svLogin=0x7f090051;
++        public static final int svLogin=0x7f09004f;
+         public static final int tabMode=0x7f09000b;
+         public static final int textSpacerNoButtons=0x7f090033;
+-        public static final int textView=0x7f09005d;
+-        public static final int textView2=0x7f09005c;
++        public static final int textView=0x7f09005b;
++        public static final int textView2=0x7f09005a;
+         public static final int title=0x7f09002c;
+         public static final int title_template=0x7f09002f;
+         public static final int topPanel=0x7f09002e;
+-        public static final int txtCedula=0x7f090055;
+-        public static final int txtPassw=0x7f090056;
+-        public static final int txtTitulo=0x7f090053;
++        public static final int txtCedula=0x7f090053;
++        public static final int txtPassw=0x7f090054;
++        public static final int txtTitulo=0x7f090051;
+         public static final int up=0x7f090008;
+         public static final int useLogo=0x7f090012;
+         public static final int withText=0x7f09001a;

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:id="@+id/action_next_group">
+        <item android:id="@+id/action_accept"
+            android:icon="@drawable/ic_tick_button"
+            app:showAsAction="withText|ifRoom"
+            android:title="@string/action_bar_button_aceptar"/>
+        <item android:id="@+id/action_cancel"
+            android:icon="@drawable/ic_cross_cancel"
+            app:showAsAction="withText|ifRoom"
+            android:title="@string/action_bar_button_aceptar"/>
+    </group>
+</menu>

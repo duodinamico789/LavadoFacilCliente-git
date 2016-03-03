@@ -1,0 +1,6 @@
+<resources>
+
+    <color name="action_bar">#00878A</color>
+    <color name="progress_start">#00878A</color>
+    <color name="progress_end">#FCA111</color>
+</resources>

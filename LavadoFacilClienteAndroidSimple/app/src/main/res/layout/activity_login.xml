@@ -1,0 +1,97 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    tools:context=".LoginActivity"
+    android:background="@drawable/backgshape_activity_login">
+
+    <ScrollView
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/svLogin"
+        android:layout_centerInParent="true">
+
+        <LinearLayout
+            android:id="@+id/linLogin"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:transitionGroup="false"
+            android:background="@drawable/backgshape_linlogin"
+            android:weightSum="1">
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/pbLoader"
+                android:visibility="gone"
+                android:indeterminate="true" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Bienvenido al lavadero facil!"
+                android:id="@+id/txtTitulo"
+                android:textStyle="bold"
+                android:textSize="25dp"
+                android:textIsSelectable="false"
+                android:textColor="#ff00353f" />
+
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"
+                android:src="@drawable/png_application_logo_orig"
+                 />
+
+            <EditText
+                android:id="@+id/txtCedula"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:hint="Cédula (sin puntos ni guiones)"
+                android:layout_marginBottom="10dp" />
+
+            <EditText
+                android:id="@+id/txtPassw"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:hint="Password"
+                 />
+
+            <Button
+                android:id="@+id/btnLoguearse"
+                android:text="Iniciar sesión"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:textColor="#FFFFFF"
+                android:textSize="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/btnshape_selection_btnregister"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="0.67" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+
+</RelativeLayout>
